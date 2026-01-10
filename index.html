@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CGPA Calculator - Utama</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>CGPA Calculator</h1>
+    <p>Sistem Pengiraan CGPA Fakulti</p>
+  </header>
+
+  <div class="home-container">
+    <h1>Selamat datang</h1>
+    <p class="subtitle">Pilih cara untuk mula menggunakan kalkulator</p>
+
+    <div class="button-group">
+      <button id="btnLogin" class="btn btn-primary">Login Pelajar</button>
+      <button id="btnGuest" class="btn btn-secondary">Masuk sebagai Guest</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('btnGuest').onclick = function () {
+      window.location.href = 'calculator.html?mode=guest';
+    };
+
+    document.getElementById('btnLogin').onclick = function () {
+      window.location.href = 'login.html';
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator - Fakulti Kejuruteraan dan Alam Bina</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+       <h1>CGPA Calculator</h1>
+        <p>(Faculty of Engineering and Built Environment)</p>
+    </header>
+
+    <!-- Program Selection Page -->
+    <div id="programSelection" class="container">
+        <h2>Pilih Program Anda</h2>
+
+        <button class="secondary-btn" 
+        onclick="window.location.href='index.html'">
+            ← Kembali ke Laman Utama
+        </button>
+
+        <div class="program-buttons">
+            <button onclick="selectProgram('Electronic')" class="program-btn">
+                <h3>Kejuruteraan Elektronik</h3>
+                <p>Bachelor of Electronic Engineering with Honours</p>
+            </button>
+            <button onclick="selectProgram('Electrical')" class="program-btn">
+                <h3>Kejuruteraan Elektrik</h3>
+                <p>Bachelor of Electrical Engineering with Honours</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- Calculator Page (Hidden initially) -->
+    <div id="calculatorPage" class="container" style="display: none;">
+        <!-- Back button -->
+        <button onclick="goBack()" class="back-btn">← Tukar Program</button>
+        
+        <h2 id="programTitle"></h2>
+
+        <!-- Current Semester Selector -->
+        <div class="semester-selector">
+            <label>Saya sekarang di: </label>
+            <select id="currentSemester" onchange="updateVisibleSemesters()">
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+            </select>
+        </div>
+
+        <!-- Semester Tabs -->
+        <div class="tabs" id="semesterTabs"></div>
+
+        <!-- Semester Content -->
+        <div id="semesterContent"></div>
+
+        <!-- Results Section -->
+        <div class="results" id="results">
+            <h3>Keputusan</h3>
+            <div class="result-box">
+                <div class="result-item">
+                    <span>GPA Semester Semasa:</span>
+                    <span id="currentGPA" class="gpa-value">-</span>
+                </div>
+                <div class="result-item cgpa-main">
+                    <span>CGPA Keseluruhan:</span>
+                    <span id="overallCGPA" class="cgpa-value">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="calculateAll()" class="btn-primary">Kira CGPA</button>
+            <button onclick="saveData()" class="btn-secondary">Simpan Data</button>
+            <button onclick="clearAll()" class="btn-danger">Reset Semua</button>
+        </div>
+
+        <!-- Prediction Calculator -->
+        <div class="prediction-section">
+            <h3>🎯 Kalkulator Ramalan CGPA</h3>
+            <div class="prediction-input">
+                <label>Target CGPA yang anda inginkan:</label>
+                <input type="number" id="targetCGPA" min="0" max="4" step="0.01" placeholder="Contoh: 3.75">
+                <button onclick="predictGrades()" class="btn-predict">Ramal Gred Diperlukan</button>
+            </div>
+            <div id="predictionResults" class="prediction-results"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 | Developed by Hasyf</p>
+    </footer>
+
+    <!-- Load data & logic -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

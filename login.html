@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - CGPA Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+  <div class="home-container">
+    <h1>Log Masuk</h1>
+    <p class="subtitle">Akses rekod CGPA anda</p>
+
+    <form id="loginForm">
+      <input type="text" id="studentId" placeholder="ID Pelajar" required>
+      <input type="password" id="password" placeholder="Kata laluan" required>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <p class="link-text">
+      Belum ada akaun?
+      <a href="register.html">Daftar sekarang</a>
+    </p>
+    <p class="link-text">
+      <a href="index.html">Kembali ke menu utama</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const id = document.getElementById('studentId').value.trim();
+      const pass = document.getElementById('password').value;
+
+      const saved = localStorage.getItem('user_' + id);
+      if (!saved) {
+        alert('Akaun tidak dijumpai. Sila daftar dahulu.');
+        return;
+      }
+
+      const user = JSON.parse(saved);
+      console.log('stored:', user.password);
+      console.log('input :', pass);
+
+      if (user.password === pass) {
+        localStorage.setItem('currentUser', id);
+        localStorage.setItem('currentProgram', user.program || '');
+        window.location.href = 'calculator.html?id=' + encodeURIComponent(id);
+      } else {
+        alert('ID atau kata laluan salah');
+      }
+
+    });
+  </script>
+</body>
+</html>

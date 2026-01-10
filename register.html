@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar - CGPA Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+  <div class="home-container">
+    <h1>Daftar Akaun</h1>
+    <p class="subtitle">Cipta akaun untuk simpan rekod CGPA anda</p>
+
+    <form id="registerForm">
+      <input type="text" id="regId" placeholder="ID Pelajar" required>
+
+      <select id="regProgram" required>
+        <option value="">Pilih Program</option>
+        <option value="Electronic">Electronic</option>
+        <option value="Electrical">Electrical</option>
+      </select>
+
+      <input type="password" id="regPass" placeholder="Kata laluan" required>
+      <input type="password" id="regPass2" placeholder="Ulang kata laluan" required>
+
+      <button type="submit" class="btn btn-primary">Daftar</button>
+    </form>
+
+    <p class="link-text">
+      Sudah ada akaun?
+      <a href="login.html">Log masuk di sini</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const id = document.getElementById('regId').value.trim();
+      const program = document.getElementById('regProgram').value;
+      const pass = document.getElementById('regPass').value;
+      const pass2 = document.getElementById('regPass2').value;
+
+      if (pass !== pass2) {
+        alert('Kata laluan tidak sepadan');
+        return;
+      }
+
+      if (localStorage.getItem('user_' + id)) {
+        alert('ID pelajar sudah berdaftar');
+        return;
+      }
+
+      const user = {
+        id: id,
+        password: pass,
+        program: program
+      };
+
+      localStorage.setItem('user_' + id, JSON.stringify(user));
+      alert('Akaun berjaya didaftar! Sila log masuk.');
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>
