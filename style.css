@@ -532,4 +532,23 @@ body.auth-page {
   background: #d0d0d0;
 }
 
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-logout {
+  background: #e0e0e0;
+  color: #333;
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn-logout:hover {
+  background: #d0d0d0;
+}
 

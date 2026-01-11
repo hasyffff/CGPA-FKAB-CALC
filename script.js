@@ -224,8 +224,11 @@ function addKOKU(semNum) {
     const kokuId = `koku-${semNum}-${kokuCounter++}`;
     
     const kokuOptions = kokuSubjects.map(koku => 
-        `<option value="${koku.kod}" data-credit="${koku.kredit}">${koku.nama} (${koku.kredit} kredit)</option>`
+        `<option value="${koku.kod}" data-credit="${koku.kredit}">
+            ${koku.nama}
+        </option>`
     ).join('');
+
     
     const kokuHtml = `
         <div class="koku-item" id="${kokuId}" style="background: #fff3cd; padding: 15px; margin-top: 10px; border-radius: 8px; border-left: 4px solid #ffc107;">
@@ -293,25 +296,29 @@ function toggleSubject(subjectId) {
 }
 
 function saveData() {
-    const dataToSave = {
-        program: currentProgram,
-        grades: savedGrades,
-        timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem('cgpa-calculator-data', JSON.stringify(dataToSave));
-    alert('✓ Data berjaya disimpan! Data anda akan kekal walaupun tutup browser.');
+  if (!studentId) return; // pastikan datang dari user login
+
+  const dataToSave = {
+    program: currentProgram,
+    grades: savedGrades,
+    timestamp: new Date().toISOString()
+  };
+
+  localStorage.setItem('cgpa_' + studentId, JSON.stringify(dataToSave));
 }
 
 function loadSavedData() {
-    const saved = localStorage.getItem('cgpa-calculator-data');
-    if (saved) {
-        const data = JSON.parse(saved);
-        if (data.program === currentProgram) {
-            savedGrades = data.grades || {};
-        }
+  if (!studentId) return;
+
+  const saved = localStorage.getItem('cgpa_' + studentId);
+  if (saved) {
+    const data = JSON.parse(saved);
+    if (data.program === currentProgram) {
+      savedGrades = data.grades || {};
     }
+  }
 }
+
 
 function clearAll() {
     if (confirm('Anda pasti mahu reset semua data? Tindakan ini tidak boleh dibatalkan.')) {
@@ -483,3 +490,8 @@ window.onload = function() {
         }
     }
 };
+function logoutUser() {
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('currentProgram');
+  window.location.href = 'index.html';
+}
