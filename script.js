@@ -53,16 +53,24 @@ function selectProgram(programType) {
   currentProgram = programType;
   localStorage.setItem('currentProgram', programType);
 
-  document.getElementById('programSelection').style.display = 'none';
-  document.getElementById('calculatorPage').style.display = 'block';
-
   const program = programmes[programType];
   document.getElementById('programTitle').textContent = program.fullName;
 
   loadSavedData();
   initializeSemesters();
   showSemester(1);
+
+ if (currentUser) {
+  document.getElementById('programSelection').style.display = 'none';
+  document.getElementById('calculatorPage').style.display = 'block';
+} else {
+  document.getElementById('programSelection').style.display = 'none';
+  document.getElementById('guestModeOptions').style.display = 'block';
+  document.getElementById('calculatorPage').style.display = 'block'; // sebab guestModeOptions kini DI DALAM calculatorPage
 }
+
+}
+
 
 function goBack() {
   function goBack() {
@@ -77,6 +85,28 @@ function goBack() {
   document.getElementById('programSelection').style.display = 'block';
   currentProgram = null;
 }
+
+function startGuestCalculator() {
+  const modeRadio = document.querySelector('input[name="guestMode"]:checked');
+  const mode = modeRadio ? modeRadio.value : 'full';
+
+  if (mode === 'single') {
+    const semNum = parseInt(document.getElementById('guestSingleSem').value);
+    document.getElementById('currentSemester').value = semNum;
+    updateVisibleSemesters();
+    showSemester(semNum);
+  } else {
+    const program = programmes[currentProgram];
+    const totalSem = Object.keys(program.semesters).length;
+    document.getElementById('currentSemester').value = totalSem;
+    updateVisibleSemesters();
+    showSemester(1);
+  }
+
+  document.getElementById('guestModeOptions').style.display = 'none';
+  document.getElementById('calculatorPage').style.display = 'block';
+}
+
 
 // ============================================
 // SEMESTER MANAGEMENT
@@ -490,6 +520,34 @@ window.onload = function() {
         }
     }
 };
+
+// ===== GUEST MODE OPTIONS EVENTS =====
+
+// bila tukar radio
+document.addEventListener('change', function (e) {
+  if (e.target.name === 'guestMode') {
+    if (e.target.value === 'single') {
+      document.getElementById('singleSemSelector').style.display = 'block';
+    } else {
+      document.getElementById('singleSemSelector').style.display = 'none';
+      const program = programmes[currentProgram];
+      const totalSem = Object.keys(program.semesters).length;
+      document.getElementById('currentSemester').value = totalSem;
+      updateVisibleSemesters();
+    }
+  }
+});
+
+// bila pilih semester tunggal
+document.addEventListener('change', function (e) {
+  if (e.target.id === 'guestSingleSem') {
+    const semNum = parseInt(e.target.value);
+    document.getElementById('currentSemester').value = semNum;
+    updateVisibleSemesters();
+    showSemester(semNum);
+  }
+});
+
 function logoutUser() {
   localStorage.removeItem('currentUser');
   localStorage.removeItem('currentProgram');

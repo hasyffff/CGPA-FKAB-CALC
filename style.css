@@ -427,7 +427,7 @@ form input {
 /* Halaman login & register (kad putih di tengah, background biru) */
 body.auth-page {
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Poppins", sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;

@@ -22,14 +22,18 @@
     </div>
   </div>
 
-  <script>
-    document.getElementById('btnGuest').onclick = function () {
-      window.location.href = 'calculator.html?mode=guest';
-    };
+<script>
+  document.getElementById('btnGuest').onclick = function () {
+    // pastikan guest tak bawa identity user lama
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentProgram');
+    window.location.href = 'calculator.html?mode=guest';
+  };
 
-    document.getElementById('btnLogin').onclick = function () {
-      window.location.href = 'login.html';
-    };
-  </script>
+  document.getElementById('btnLogin').onclick = function () {
+    window.location.href = 'login.html';
+  };
+</script>
+
 </body>
 </html>

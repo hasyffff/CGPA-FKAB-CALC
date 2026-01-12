@@ -11,10 +11,7 @@
     <header>
        <h1>CGPA Calculator</h1>
         <p>(Faculty of Engineering and Built Environment)</p>
-        <button class="btn-logout" onclick="logoutUser()">
-                Log Keluar
-            </button>
-        </div>
+        <button class="btn-logout" onclick="logoutUser()">Log Keluar</button>
 </button>
 
     </header>
@@ -60,6 +57,33 @@
                 <option value="7">Semester 7</option>
                 <option value="8">Semester 8</option>
             </select>
+        <div id="guestModeOptions" class="guest-options" style="display:none;">
+            <h3>Bagaimana anda mahu guna kalkulator?</h3><label>
+            <input type="radio" name="guestMode" value="full" checked>
+            Saya mahu masukkan gred untuk semua semester
+        </label>
+        <label>
+            <input type="radio" name="guestMode" value="single">
+            Saya hanya mahu kira satu semester
+        </label>
+
+        <div id="singleSemSelector" style="margin-top:10px; display:none;">
+            <label>Pilih semester:</label>
+            <select id="guestSingleSem">
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+            <option value="5">Semester 5</option>
+            <option value="6">Semester 6</option>
+            <option value="7">Semester 7</option>
+            <option value="8">Semester 8</option>
+            </select>
+                </div>
+                <button class="btn-primary" onclick="startGuestCalculator()">
+            Teruskan ke kalkulator
+            </button>
+            </div>
         </div>
 
         <!-- Semester Tabs -->
