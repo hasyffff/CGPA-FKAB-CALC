@@ -46,10 +46,21 @@ header p {
 .container {
     max-width: 1000px;
     margin: 40px auto;
-    background: white;
+    
+    /* Guna warna biru gelap yang sedia ada dalam :root anda */
+    background: var(--card-blue); 
+    
+    /* Tukar tulisan kembali kepada putih */
+    color: var(--text-white); 
+    
     border-radius: 15px;
     padding: 40px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    
+    /* Gelapkan sedikit bayang-bayang supaya nampak lebih dalam */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+    
+    /* Tambah sempadan nipis warna cyan supaya ia 'pop' */
+    border: 1px solid rgba(91, 192, 190, 0.2); 
 }
 
 /* Program Selection */
@@ -251,6 +262,32 @@ header p {
     background: rgba(255,255,255,0.2);
     font-size: 1.2em;
     font-weight: 700;
+}
+
+/* Mesej Anugerah Dekan */
+.dekan-alert {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); /* Warna Emas */
+    color: #855300; /* Teks warna coklat gelap untuk kontras dengan emas */
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* Animasi melantun kecil */
+}
+
+/* Khas untuk menebalkan teks tahniah */
+.dekan-alert strong {
+    font-size: 1.2em;
+    color: #663300;
+}
+
+/* Animasi untuk kotak mesej (Pilihan, tapi cantik!) */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .gpa-value, .cgpa-value {
@@ -455,6 +492,10 @@ body.auth-page {
 .home-container {
     width: 100%;
     max-width: 380px;
+    
+    /* TAMBAH BARIS INI: 'auto' akan menolak kotak ini tepat ke tengah skrin */
+    margin: 80px auto; 
+    
     padding: 32px 28px;
     background: #ffffff;
     border-radius: 18px;
@@ -572,3 +613,302 @@ body.auth-page {
   background: #d0d0d0;
 }
 
+/* style.css */
+
+/* Menyasarkan butang-butang secara kolektif untuk gaya asas yang konsisten */
+/* Menyasarkan butang-butang dalam kontena <div> yang berdekatan dengan Keputusan */
+#results + div > button {
+    font-family: 'Poppins', sans-serif; /* Pastikan fon Poppins digunakan */
+    font-weight: 500;
+    padding: 12px 24px; /* Padding yang lebih konsisten */
+    border-radius: 8px; /* Sudut tumpul yang bersih */
+    border: 2px solid transparent; /* Sempadan bersih, warna telus untuk butang padat */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    text-shadow: none !important; /* MEMBUANG MASALAH SEMPADAN TEKS HITAM */
+    outline: none;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Menyasarkan butang-butang secara individu berdasarkan kedudukannya (jika HTML anda seperti di atas) */
+
+/* Butang 1: "Kira CGPA" - Biru Padat */
+#results + div > button:nth-of-type(1) {
+    background-color: rgb(0, 0, 255); /* Biru padat */
+    color: #ffffff; /* Teks putih */
+    border-color: rgb(0, 0, 255); /* Sempadan biru bersih */
+}
+
+#results + div > button:nth-of-type(1):hover {
+    background-color: rgba(0, 0, 255, 0.85);
+    border-color: rgba(0, 0, 255, 0.85);
+}
+
+/* Butang 2: "Simpan Data" - Gaya Rangka yang Bersih */
+#results + div > button:nth-of-type(2) {
+    background-color: #ffffff; /* Latar belakang putih bersih */
+    color: rgb(0, 0, 255); /* Teks biru tulen */
+    border: 2px solid rgb(0, 0, 255); /* Sempadan biru bersih */
+}
+
+#results + div > button:nth-of-type(2):hover {
+    background-color: rgba(0, 0, 255, 0.1);
+}
+
+/* Butang 3: "Reset Semua" - Merah Padat untuk 'Perhatian' */
+#results + div > button:nth-of-type(3) {
+    background-color: rgb(255, 0, 0); /* Merah padat */
+    color: #ffffff; /* Teks putih */
+    border-color: rgb(255, 0, 0); /* Sempadan merah bersih */
+}
+
+#results + div > button:nth-of-type(3):hover {
+    background-color: rgba(255, 0, 0, 0.85);
+    border-color: rgba(255, 0, 0, 0.85);
+}
+
+/* Menambahkan kontena butang untuk keselarasan (berdasarkan image_2.png) */
+/* Kontena ini berada di bawah .results dan di atas kontena Ramalan */
+#results + div {
+    display: flex;
+    justify-content: flex-start; /* Sejajarkan ke kiri, konsisten dengan elemen lain */
+    gap: 15px; /* Berikan jurang antara butang */
+    margin-top: 25px; /* Berikan margin atas */
+    padding-left: 15px; /* Margin sisi */
+    margin-bottom: 25px; /* Margin bawah */
+}
+
+/* ========================================= */
+/* TEMA DARK MODE (BIRU GELAP & CYAN) */
+/* ========================================= */
+
+/* 1. KEMASKINI WARNA THEME DI :ROOT (TAMBAH WARNA BARU) */
+:root {
+    --theme-dark-blue: #0b132b; /* Biru gelap untuk latar belakang container */
+}
+
+/* 2. TUKAR CONTAINER KEPADA MOD GELAP */
+.container {
+    background-color: var(--theme-dark-blue);
+    color: var(--text-white); /* Teks putih secara automatik */
+    border: 1px solid rgba(91, 192, 190, 0.2); /* Sempadan nipis warna cyan */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6); /* Bayang-bayang yang lebih gelap */
+}
+
+/* 3. TUKAR ELEMEN-ELEMEN UI DALAMAN */
+
+/* A. Kotak Pilihan Semester */
+.semester-selector {
+    background-color: var(--card-blue); /* Gelapkan latar belakang */
+    border: 1px solid rgba(91, 192, 190, 0.3);
+}
+
+.semester-selector label {
+    color: var(--sky-blue); /* Teks "Saya sekarang di" jadi cyan */
+}
+
+.semester-selector select {
+    background-color: var(--card-blue);
+    color: var(--text-white);
+    border: 2px solid var(--sky-blue);
+}
+
+/* B. Jadual Subjek (Table) */
+.subject-table th {
+    background-color: var(--card-blue);
+    color: var(--sky-blue); /* Tajuk jadual jadi cyan */
+}
+
+.subject-table td {
+    border-bottom: 1px solid rgba(91, 192, 190, 0.2);
+}
+
+.subject-table tbody tr:hover {
+    background-color: rgba(91, 192, 190, 0.05); /* Kesan hover yang halus */
+}
+
+.subject-table select {
+    background-color: var(--card-blue);
+    color: var(--text-white);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.badge {
+    background-color: var(--card-blue);
+    color: var(--sky-blue); /* Badge (Taraf/Kredit) jadi cyan */
+}
+
+/* C. Kotak Keputusan (Result Box) */
+.result-item {
+    background-color: var(--card-blue);
+    border-left: 4px solid var(--sky-blue); /* Sempadan sisi warna cyan */
+}
+
+.result-item.cgpa-main {
+    background-color: var(--theme-dark-blue);
+}
+
+/* D. Kotak Amaran Dekan (Emas tetap dikekalkan sebagai sorotan) */
+.dekan-alert {
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
+}
+
+/* E. Kotak Ramalan (Prediction Results) */
+.prediction-results {
+    background-color: var(--card-blue);
+    border: 1px solid rgba(255, 126, 20, 0.4); /* Sempadan oren */
+}
+
+/* F. KEMASKINI BAHAGIAN TAB (SEM 1, SEM 2...) */
+.tab {
+    background-color: var(--card-blue);
+    color: var(--text-white);
+    border: 1px solid rgba(91, 192, 190, 0.3);
+}
+
+.tab:hover {
+    background-color: rgba(91, 192, 190, 0.2);
+}
+
+/* Warna tab yang sedang aktif (dipilih) */
+.tab.active {
+    background-color: var(--sky-blue);
+    color: var(--theme-dark-blue); /* Teks jadi gelap supaya jelas di atas cyan */
+    border-color: var(--sky-blue);
+}
+
+/* G. KEMASKINI KOTAK HEADER SEMESTER (Semester 1 / Jumlah Kredit) */
+.semester-header {
+    background-color: transparent; /* Buang warna putih, jadikan ia lutsinar menyatu dengan latar belakang */
+    border-bottom: 2px solid rgba(91, 192, 190, 0.3); /* Tambah garisan bawah sahaja supaya kemas */
+    border-radius: 0;
+}
+
+.semester-header h3, 
+.semester-header p {
+    color: var(--text-white); /* Pastikan tulisan Jumlah Kredit jadi putih */
+}
+
+/* H. KEMASKINI KAWASAN KALKULATOR RAMALAN (Bawah Sekali) */
+.prediction-section {
+    background-color: var(--card-blue);
+    border: 1px solid rgba(91, 192, 190, 0.3);
+}
+
+/* Gelapkan kotak input teks supaya tak sakit mata */
+.prediction-input input {
+    background-color: var(--theme-dark-blue);
+    color: var(--text-white);
+    border: 1px solid var(--sky-blue);
+}
+
+/* Tukar kotak keputusan ramalan yang putih di bawah butang Oren */
+.prediction-results {
+    background-color: var(--theme-dark-blue);
+    color: var(--text-white);
+    border: 1px solid rgba(253, 126, 20, 0.4); /* Sempadan kekal oren mengikut tema butang */
+}
+
+/* F. Buang Warna Ungu Pada Kotak Keputusan */
+.results {
+    background: var(--theme-dark-blue); /* Ini akan memadam gradient ungu asal */
+    border: 1px solid rgba(91, 192, 190, 0.3); /* Tambah sempadan cyan nipis */
+}
+
+.results h3 {
+    color: var(--sky-blue); /* Tukar tulisan 'Keputusan' kepada warna cyan */
+}
+
+/* ========================================= */
+/* POSISI BUTANG LOG KELUAR (ATAS KANAN)     */
+/* ========================================= */
+
+.top-right-nav {
+    position: absolute; /* Membenarkan kita meletakkannya secara bebas */
+    top: 20px;          /* Jarak 20px dari bumbung skrin */
+    right: 20px;        /* Jarak 20px dari dinding kanan skrin */
+    z-index: 1000;      /* Pastikan ia sentiasa berada di lapisan paling atas */
+}
+
+/* Sedikit kemasan untuk Butang Log Keluar itu sendiri */
+.btn-logout {
+    background: transparent;
+    color: var(--sky-blue);
+    border: 1px solid var(--sky-blue);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(91, 192, 190, 0.15); /* Kesan hover cyan yang lembut */
+    color: var(--text-white);
+}
+
+/* ========================================= */
+/* TEMA DARK MODE: HALAMAN UTAMA (INDEX)     */
+/* ========================================= */
+
+/* 1. Tukar kotak putih kepada biru gelap */
+.home-container {
+    background-color: var(--card-blue, #1c2541); 
+    border: 1px solid rgba(91, 192, 190, 0.3); /* Sempadan cyan nipis */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6); /* Bayang-bayang gelap */
+}
+
+/* 2. Tukar warna teks di dalam kotak */
+.home-container h2, 
+.home-container h3, 
+.home-container h1 {
+    color: var(--sky-blue); /* Tajuk "Selamat datang" jadi Cyan */
+}
+
+.home-container p {
+    color: #a0aec0; /* Teks penerangan jadi kelabu cerah */
+}
+
+/* 3. Gaya Butang Pertama (Login Pelajar) */
+.home-container button:nth-of-type(1),
+.home-container a:nth-of-type(1) {
+    background-color: var(--sky-blue) !important; /* Warna cyan penuh (solid) */
+    color: var(--theme-dark-blue, #0b132b) !important; /* Teks gelap supaya kontras */
+    border: none !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(91, 192, 190, 0.4) !important; /* Efek 'glow' (bersinar) */
+    transition: all 0.3s ease;
+}
+
+.home-container button:nth-of-type(1):hover,
+.home-container a:nth-of-type(1):hover {
+    background-color: #4ab3b1 !important; /* Cyan sedikit pekat bila kursor di atas */
+    box-shadow: 0 6px 20px rgba(91, 192, 190, 0.7) !important; /* Glow makin terang */
+    transform: translateY(-2px); /* Animasi butang terangkat sedikit */
+}
+
+/* 4. Gaya Butang Kedua (Guest) - MINIMALIS TAPI JELAS */
+.home-container button:nth-of-type(2),
+.home-container a:nth-of-type(2) {
+    background-color: rgba(255, 255, 255, 0.05) !important; /* Ada isi kelabu sedikit, bukan kosong sepenuhnya */
+    color: #e2e8f0 !important; /* Teks putih keabu-abuan terang */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.3s ease;
+}
+
+.home-container button:nth-of-type(2):hover,
+.home-container a:nth-of-type(2):hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    color: #ffffff !important;
+}
+
+/* Efek Hover untuk Simulator Dropdown */
+.live-grade-editor:hover {
+    background-color: rgba(91, 192, 190, 0.1) !important;
+}
+
+.live-grade-editor:focus {
+    box-shadow: 0 0 0 2px rgba(91, 192, 190, 0.5);
+}

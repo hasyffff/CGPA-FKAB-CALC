@@ -122,7 +122,10 @@ function initializeSemesters() {
     Object.keys(program.semesters).forEach(semNum => {
         const tab = document.createElement('button');
         tab.className = 'tab';
-        tab.textContent = `Semester ${semNum}`;
+        
+        // UBAH BARIS INI: Tukar 'Semester' kepada 'SEM'
+        tab.textContent = `SEM ${semNum}`; 
+        
         tab.onclick = () => showSemester(parseInt(semNum));
         tabsContainer.appendChild(tab);
         
@@ -417,12 +420,34 @@ function calculateAll() {
     document.getElementById('currentGPA').textContent = currentSemGPA;
     document.getElementById('overallCGPA').textContent = cgpa;
     
+    // --- TAMBAH LOGIK ANUGERAH DEKAN DI SINI ---
+    const dekanMessageDiv = document.getElementById('dekanMessage');
+    
+    if (currentSemGPA !== '-' && parseFloat(currentSemGPA) >= 3.60) {
+        dekanMessageDiv.style.display = 'block';
+        dekanMessageDiv.innerHTML = `
+            <strong>🎉 TAHNIAH! 🎉</strong><br>
+            Anda telah berjaya mencapai status <strong>Anugerah Dekan</strong> untuk semester ini dengan GPA ${currentSemGPA}! Teruskan kecemerlangan!
+        `;
+    } else {
+        // Sembunyikan mesej jika GPA jatuh bawah 3.60 atau jika belum dikira
+        dekanMessageDiv.style.display = 'none'; 
+    }
+    // --- TAMAT LOGIK ANUGERAH DEKAN ---
+
     if (totalCredits > 0) {
         alert(`✓ Pengiraan selesai!\n\nCGPA Keseluruhan: ${cgpa}\nJumlah Kredit: ${totalCredits}`);
     } else {
         alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
     }
 }
+
+    if (totalCredits > 0) {
+        alert(`✓ Pengiraan selesai!\n\nCGPA Keseluruhan: ${cgpa}\nJumlah Kredit: ${totalCredits}`);
+    } else {
+        alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
+    }
+
 
 // ============================================
 // CGPA PREDICTION
@@ -482,27 +507,189 @@ function predictGrades() {
             <p>Maaf, target CGPA <strong>${targetCGPA.toFixed(2)}</strong> tidak mungkin dicapai walaupun anda mendapat 4.00 untuk semua subjek yang tinggal.</p>
             <p>CGPA maksimum yang boleh dicapai: <strong>${((totalGradePoints + (remainingCredits * 4.0)) / (totalCredits + remainingCredits)).toFixed(2)}</strong></p>
         `;
-    } else if (requiredGPA < 0) {
+    } else if (requiredGPA <= (totalGradePoints / totalCredits) && requiredRemainingPoints <= 0) {
         resultsDiv.innerHTML = `
             <h4 style="color: #28a745;">✓ Target Sudah Tercapai!</h4>
-            <p>CGPA semasa anda (<strong>${(totalGradePoints / totalCredits).toFixed(2)}</strong>) sudah melebihi target!</p>
+            <p>CGPA semasa anda (<strong>${(totalGradePoints / totalCredits).toFixed(2)}</strong>) sudah berada di atas target yang anda inginkan.</p>
         `;
     } else {
-        resultsDiv.innerHTML = `
-            <h4 style="color: #667eea;">🎯 Ramalan untuk Target CGPA ${targetCGPA.toFixed(2)}</h4>
-            <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                <p><strong>CGPA Semasa:</strong> ${(totalGradePoints / totalCredits).toFixed(2)}</p>
-                <p><strong>Kredit Selesai:</strong> ${totalCredits}</p>
-                <p><strong>Kredit Tinggal:</strong> ${remainingCredits}</p>
-                <hr style="margin: 15px 0;">
-                <p style="font-size: 1.1em;"><strong>GPA Minimum Diperlukan:</strong> <span style="color: #667eea; font-size: 1.3em;">${requiredGPA.toFixed(2)}</span></p>
+        
+        // --- LOGIK STRATEGI KOMBINASI GRED (PENDEKATAN 2) ---
+        
+        const nextSem = currentSem + 1;
+        let nextSemHTML = '';
+        
+        if (program.semesters[nextSem]) {
+            const nextSubjects = program.semesters[nextSem];
+            const nextSemCredits = nextSubjects.reduce((sum, sub) => sum + sub.kredit, 0);
+            
+            // Senarai gred dari tertinggi ke terendah
+            const gradeScale = [
+                { g: 'A+', p: 4.00 }, { g: 'A', p: 4.00 }, { g: 'A-', p: 3.67 },
+                { g: 'B+', p: 3.33 }, { g: 'B', p: 3.00 }, { g: 'B-', p: 2.67 },
+                { g: 'C+', p: 2.33 }, { g: 'C', p: 2.00 }
+            ];
+
+            // 1. Setkan semua subjek kepada A sebagai permulaan (Senario Terbaik)
+            let recommendedGrades = nextSubjects.map(sub => ({ ...sub, targetG: 'A', targetP: 4.00 }));
+
+            // 2. Susun indeks subjek mengikut kredit tertinggi ke terendah
+            // Tujuannya: Kita nak cuba turunkan gred subjek berat (susah) dahulu
+            let sortedIndices = nextSubjects.map((sub, idx) => ({ idx, k: sub.kredit }))
+                                            .sort((a, b) => b.k - a.k)
+                                            .map(item => item.idx);
+
+            // 3. Algoritma mencari kombinasi optimum
+            let canDowngrade = true;
+            while(canDowngrade) {
+                canDowngrade = false; // Reset status setiap kali gelung (loop) bermula
                 
-                <h5 style="margin-top: 20px;">Scenario Gred:</h5>
-                <ul style="line-height: 1.8;">
-                    <li>Jika semua subjek dapat <strong>A (4.00)</strong>: CGPA = ${((totalGradePoints + remainingCredits * 4.0) / (totalCredits + remainingCredits)).toFixed(2)}</li>
-                    <li>Jika semua subjek dapat <strong>B+ (3.50)</strong>: CGPA = ${((totalGradePoints + remainingCredits * 3.5) / (totalCredits + remainingCredits)).toFixed(2)}</li>
-                    <li>Jika semua subjek dapat <strong>B (3.00)</strong>: CGPA = ${((totalGradePoints + remainingCredits * 3.0) / (totalCredits + remainingCredits)).toFixed(2)}</li>
-                </ul>
+                for (let i of sortedIndices) {
+                    let currentSub = recommendedGrades[i];
+                    let currentGradeIdx = gradeScale.findIndex(g => g.g === currentSub.targetG);
+                    
+                    // Jika gred masih boleh diturunkan (bukan C)
+                    if (currentGradeIdx < gradeScale.length - 1) {
+                        let nextLowerGrade = gradeScale[currentGradeIdx + 1];
+
+                        // Kira adakah purata GPA masih melepasi requiredGPA jika gred ini diturunkan?
+                        let testTotalPoints = 0;
+                        recommendedGrades.forEach((sub, idx) => {
+                            if (idx === i) testTotalPoints += nextLowerGrade.p * sub.kredit;
+                            else testTotalPoints += sub.targetP * sub.kredit;
+                        });
+
+                        let testGPA = testTotalPoints / nextSemCredits;
+
+                        // Jika ya, jadikan gred yang lebih rendah ini sebagai target baharu
+                        if (testGPA >= requiredGPA) {
+                            recommendedGrades[i].targetG = nextLowerGrade.g;
+                            recommendedGrades[i].targetP = nextLowerGrade.p;
+                            canDowngrade = true; 
+                            break; // Mula dari awal susunan (cuba gilir-gilir subjek lain pula)
+                        }
+                    }
+                }
+            }
+
+            // 4. Kira purata awal selepas algoritma siap
+            const initialExpectedPoints = recommendedGrades.reduce((sum, sub) => sum + sub.targetP * sub.kredit, 0);
+            const initialExpectedCGPA = (totalGradePoints + initialExpectedPoints) / (totalCredits + nextSemCredits);
+
+            // 5. Cetak Visual dengan Dropdown Interaktif (Simulator)
+            nextSemHTML = `
+                <h5 style="margin-top: 20px; color: var(--sky-blue); display: flex; align-items: center; gap: 8px;">
+                    🕹️ Simulator Strategi Semester ${nextSem}
+                </h5>
+                <p style="font-size: 0.95em; opacity: 0.9;">Sistem telah memberikan cadangan awal. Anda bebas mengubah gred di bawah untuk melihat kesan pada CGPA anda secara langsung.</p>
+                
+                <div style="background: var(--theme-dark-blue); padding: 20px; border-radius: 12px; border: 2px solid var(--sky-blue); margin-top: 15px; text-align: center; box-shadow: 0 8px 25px rgba(91, 192, 190, 0.15);">
+                    <p style="margin: 0; color: #a0aec0; font-size: 0.95em; font-weight: 500;">Ramalan CGPA Baharu Anda</p>
+                    <h2 id="live-cgpa-display" style="color: #28a745; margin: 10px 0; font-size: 3em; font-weight: 700; text-shadow: 0 0 15px rgba(40, 167, 69, 0.4);">${initialExpectedCGPA.toFixed(2)}</h2>
+                    <p id="live-warning" style="color: #dc3545; font-size: 0.9em; margin: 0; display: none; font-weight: 600;">⚠️ Kombinasi gred ini gagal melepasi sasaran ${targetCGPA.toFixed(2)}</p>
+                    <p id="live-success" style="color: var(--sky-blue); font-size: 0.9em; margin: 0; font-weight: 600;">✨ Sasaran berjaya dicapai!</p>
+                </div>
+
+                <ul style="background: transparent; padding: 0; margin-top: 25px; list-style: none;">
+            `;
+            
+            // Senarai semua gred untuk dropdown
+            const allGradesOptions = [
+                { g: 'A+', p: 4.00 }, { g: 'A', p: 4.00 }, { g: 'A-', p: 3.67 },
+                { g: 'B+', p: 3.33 }, { g: 'B', p: 3.00 }, { g: 'B-', p: 2.67 },
+                { g: 'C+', p: 2.33 }, { g: 'C', p: 2.00 }, { g: 'C-', p: 1.67 },
+                { g: 'D+', p: 1.33 }, { g: 'D', p: 1.00 }, { g: 'E', p: 0.00 }, { g: 'F', p: 0.00 }
+            ];
+
+            recommendedGrades.forEach(sub => {
+                let optionsHTML = allGradesOptions.map(opt => 
+                    `<option value="${opt.p}" ${opt.g === sub.targetG ? 'selected' : ''}>${opt.g}</option>`
+                ).join('');
+
+                nextSemHTML += `
+                <li style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(91, 192, 190, 0.1); background: var(--card-blue); margin-bottom: 8px; border-radius: 8px;">
+                    <div>
+                        <strong>${sub.kod}</strong><br>
+                        <span style="font-size: 0.9em; color: #e2e8f0;">${sub.nama}</span> 
+                        <span style="font-size:0.8em; color: var(--sky-blue); margin-left: 5px; background: rgba(91,192,190,0.1); padding: 2px 6px; border-radius: 4px;">${sub.kredit} Kredit</span>
+                    </div>
+                    <div>
+                        <select class="live-grade-editor" data-kredit="${sub.kredit}" style="padding: 8px 12px; border-radius: 6px; background: var(--theme-dark-blue); color: #fff; border: 1px solid var(--sky-blue); cursor: pointer; font-weight: bold; font-size: 1em; outline: none;">
+                            ${optionsHTML}
+                        </select>
+                    </div>
+                </li>`;
+            });
+            nextSemHTML += `</ul>`;
+        } else {
+            nextSemHTML = `<p style="margin-top: 20px; font-style: italic; color: #a0aec0;">Tiada data subjek bagi semester seterusnya.</p>`;
+        }
+
+        resultsDiv.innerHTML = `
+            <div style="padding: 5px; margin-top: 10px;">
+                ${nextSemHTML}
+            </div>
+        `;
+
+        // --- FUNGSI PENGIRAAN LIVE (REAL-TIME) ---
+        // Kita letak delay sedikit (setTimeout) supaya HTML sempat dirender sebelum JS mencari elemen
+        setTimeout(() => {
+            const dropdowns = document.querySelectorAll('.live-grade-editor');
+            const displayCGPA = document.getElementById('live-cgpa-display');
+            const warningText = document.getElementById('live-warning');
+            const successText = document.getElementById('live-success');
+
+            function calculateLive() {
+                let liveNewPoints = 0;
+                let liveNewCredits = 0;
+
+                dropdowns.forEach(dd => {
+                    let kredit = parseFloat(dd.getAttribute('data-kredit'));
+                    let mata = parseFloat(dd.value);
+                    liveNewPoints += (kredit * mata);
+                    liveNewCredits += kredit;
+                });
+
+                let liveTotalPoints = totalGradePoints + liveNewPoints;
+                let liveTotalCredits = totalCredits + liveNewCredits;
+                let liveCGPA = liveTotalPoints / liveTotalCredits;
+
+                displayCGPA.textContent = liveCGPA.toFixed(2);
+
+                // Tukar warna dan amaran mengikut status
+                if (liveCGPA >= targetCGPA) {
+                    displayCGPA.style.color = '#28a745'; // Hijau
+                    displayCGPA.style.textShadow = '0 0 15px rgba(40, 167, 69, 0.4)';
+                    warningText.style.display = 'none';
+                    successText.style.display = 'block';
+                } else {
+                    displayCGPA.style.color = '#dc3545'; // Merah
+                    displayCGPA.style.textShadow = '0 0 15px rgba(220, 53, 69, 0.4)';
+                    warningText.style.display = 'block';
+                    successText.style.display = 'none';
+                }
+            }
+
+            // Tambah 'pendengar' pada setiap dropdown. Jika berubah, kira semula.
+            dropdowns.forEach(dd => {
+                dd.addEventListener('change', calculateLive);
+            });
+            
+            // Jalankan sekali pada mula-mula
+            calculateLive();
+
+        }, 50);
+
+        // BUANG background: white; pada div di bawah
+        resultsDiv.innerHTML = `
+            <h4 style="color: var(--sky-blue);">🎯 Ramalan untuk Target CGPA ${targetCGPA.toFixed(2)}</h4>
+            <div style="padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <p><strong>CGPA Semasa:</strong> ${(totalGradePoints / totalCredits).toFixed(2)}</p>
+                <hr style="margin: 15px 0; border-color: rgba(91, 192, 190, 0.2);">
+                <p style="font-size: 1.1em;"><strong>GPA Minimum Diperlukan (Baki Sem):</strong> <span style="color: #fd7e14; font-size: 1.3em; font-weight: bold;">${requiredGPA.toFixed(2)}</span></p>
+                
+                ${nextSemHTML}
+                
             </div>
         `;
     }
