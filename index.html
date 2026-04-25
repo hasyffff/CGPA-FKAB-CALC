@@ -8,35 +8,28 @@
 </head>
 <body>
   <header>
-    <h1>CGPA MASTER</h1>
+    <h1>CGPA CALCULATOR</h1>
     <p>Track your academic progress</p>
   </header>
 
   <div class="home-container">
-        <h2>Selamat datang</h2>
-        <p>Pilih cara untuk mula merancang akademik anda</p>
+        <h2 style="text-align: center; margin-bottom: 25px; color: #5bc0be;">Selamat Datang</h2>
 
-        <button id="google-login-btn" class="btn-google" style="background-color: #ffffff !important; color: #444444 !important; border: 1px solid #ccc; width: 100%; padding: 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 600; cursor: pointer; margin-top: 15px; margin-bottom: 20px;">
-    
-    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-    </svg>
-
-    Log Masuk dengan Google
 </button>
 
-        <div class="divider"><span>ATAU</span></div>
+
 
         <div class="auth-form">
             <input type="text" id="login-matrik" placeholder="No. Matrik (cth: 1210000)" required>
             <input type="password" id="login-pw" placeholder="Kata Laluan" required>
-            
+
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button id="btn-login" class="btn-primary" style="flex: 1;">Log Masuk</button>
-                <button id="btn-signup" class="btn-secondary" style="flex: 1;">Daftar Baru</button>
+                <a href="register.html" class="btn-secondary" style="flex: 1; text-decoration: none; text-align: center; line-height: 2.5;">Daftar Baru</a>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="#" id="btn-guest" style="color: #5bc0be; text-decoration: none; font-size: 0.9em; transition: color 0.3s ease;">Terus masuk sebagai Tetamu</a>
             </div>
         </div>
     </div>

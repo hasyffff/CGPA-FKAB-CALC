@@ -131,7 +131,6 @@ const electronicEngineering = {
         ],
         8: [
             { kod: "KEE4814", nama: "Tesis II", kredit: 4, taraf: "WP", optional: false },
-            { kod: "KEE4833", nama: "Elektronik Perubatan", kredit: 3, taraf: "EP", optional: true, elektif: true },
             { kod: "KEE4843", nama: "Elektronik Opto", kredit: 3, taraf: "EP", optional: true, elektif: true },
             { kod: "KEE4863", nama: "Sistem Kuasa", kredit: 3, taraf: "EP", optional: true, elektif: true },
             { kod: "KET4853", nama: "Kejuruteraan Frekuensi Radio dan Mikrogelombang", kredit: 3, taraf: "EP", optional: true, elektif: true }
@@ -199,19 +198,16 @@ const electricalEngineering = {
         ],
         7: [
             { kod: "KEE4712", nama: "Tesis I", kredit: 2, taraf: "WP", optional: false },
-            { kod: "KEE4733", nama: "Pemacu dan Mesin Elektrik", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEE4753", nama: "Sistem Kuasa Lanjutan", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEE4773", nama: "Peranti Semikonduktor Kuasa", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEK4743", nama: "Rangkaian Neural dan Logik Fuzzy", kredit: 3, taraf: "EP", optional: true, elektif: true },
+            { kod: "KEE4733", nama: "Pemacu Elektrik", kredit: 3, taraf: "EP", optional: true, elektif: true },
             { kod: "KEK4783", nama: "Kecerdasan Buatan", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEE4793", nama: "Automasi Industri", kredit: 3, taraf: "EP", optional: true, elektif: true }
+            { kod: "KEK4783", nama: "Kejuruteraan Voltan Tinggi", kredit: 3, taraf: "EP", optional: true, elektif: true },
+            { kod: "KEK4783", nama: "Perlindungan Sistem Kuasa", kredit: 3, taraf: "EP", optional: true, elektif: true },
         ],
         8: [
             { kod: "KEE4814", nama: "Tesis II", kredit: 4, taraf: "WP", optional: false },
             { kod: "KEE4833", nama: "Tenaga Boleh Baharu", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEE4843", nama: "Grid Pintar", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEE4863", nama: "Sistem Penjanaan Kuasa", kredit: 3, taraf: "EP", optional: true, elektif: true },
-            { kod: "KEE4873", nama: "Kualiti Kuasa Elektrik", kredit: 3, taraf: "EP", optional: true, elektif: true }
+            { kod: "KEE4843", nama: "Rekabentuk Pencawang", kredit: 3, taraf: "EP", optional: true, elektif: true },
+            { kod: "KEE4863", nama: "Pengurusan dan Penggunaan Tenaga Elektrik", kredit: 3, taraf: "EP", optional: true, elektif: true },
         ]
     }
 };

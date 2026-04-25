@@ -17,94 +17,44 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // ==========================================
-// 2. FUNGSI LOG MASUK GOOGLE
+// 4. FUNGSI LOG MASUK
 // ==========================================
-const googleBtn = document.getElementById('google-login-btn');
-if(googleBtn) {
-    googleBtn.addEventListener('click', () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            checkAndCreateProfile(result.user);
-        }).catch((error) => {
-            alert("Ralat Log Masuk Google: " + error.message);
-        });
-    });
-}
+const loginBtn = document.getElementById('btn-login');
 
-// ==========================================
-// 3. FUNGSI DAFTAR BARU (Email & Password)
-// ==========================================
-const signupBtn = document.getElementById('btn-signup');
-if(signupBtn) {
-    signupBtn.addEventListener('click', () => {
-        const matrik = document.getElementById('login-matrik').value;
+if (loginBtn) {
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const matrik = document.getElementById('login-matrik').value.trim();
         const pw = document.getElementById('login-pw').value;
-        
-        if(!matrik || !pw) {
+
+        if (!matrik || !pw) {
             alert("Sila masukkan No. Matrik dan Kata Laluan!");
             return;
         }
 
-        const fakeEmail = matrik + "@student.usim.edu.my";
+        // Tukar No. Matrik kepada format e-mel "palsu" yang kita daftar tempoh hari
+        const loginEmail = matrik + "@student.usim.edu.my";
 
-        auth.createUserWithEmailAndPassword(fakeEmail, pw).then((result) => {
-            const course = prompt("Pendaftaran Berjaya! Sila masukkan nama Kursus anda:");
-            
-            db.collection("users").doc(result.user.uid).set({
-                noMatrik: matrik,
-                kursus: course || "Tidak Dinyatakan",
-                tarikhDaftar: new Date()
-            }).then(() => {
+        // Minta Firebase semak adakah ID dan Password ini wujud & betul
+        auth.signInWithEmailAndPassword(loginEmail, pw)
+            .then((userCredential) => {
+                // Log masuk berjaya!
+                alert("Berjaya log masuk! Selamat kembali.");
                 window.location.href = "calculator.html";
+            })
+            .catch((error) => {
+                // Jika salah password atau belum daftar
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-login-credentials') {
+                    alert("Ralat: No. Matrik tidak wujud atau kata laluan salah.");
+                } else {
+                    alert("Ralat Log Masuk: " + error.message);
+                }
             });
-        }).catch((error) => {
-            alert("Ralat Pendaftaran: " + error.message);
-        });
     });
 }
 
-// ==========================================
-// 4. FUNGSI LOG MASUK
-// ==========================================
-const loginBtn = document.getElementById('btn-login');
-if(loginBtn) {
-    loginBtn.addEventListener('click', () => {
-        const matrik = document.getElementById('login-matrik').value;
-        const pw = document.getElementById('login-pw').value;
-        const fakeEmail = matrik + "@student.usim.edu.my";
 
-        auth.signInWithEmailAndPassword(fakeEmail, pw).then((result) => {
-            window.location.href = "calculator.html";
-        }).catch((error) => {
-            alert("Ralat: No. Matrik atau Kata Laluan salah!");
-        });
-    });
-}
-
-// ==========================================
-// 5. SEMAK PROFIL
-// ==========================================
-function checkAndCreateProfile(user) {
-    const userRef = db.collection("users").doc(user.uid);
-    userRef.get().then((doc) => {
-        if (doc.exists) {
-            window.location.href = "calculator.html";
-        } else {
-            const matrik = prompt("Selamat datang! Sila masukkan No. Matrik anda:");
-            const course = prompt("Sila masukkan nama Kursus/Fakulti anda:");
-            
-            userRef.set({
-                nama: user.displayName,
-                email: user.email,
-                noMatrik: matrik,
-                kursus: course,
-                tarikhDaftar: new Date()
-            }).then(() => {
-                window.location.href = "calculator.html";
-            });
-        }
-    });
-} // <--- Tutup kurungan yang tertinggal tadi
 
 // ==========================================
 // FUNGSI PENDAFTARAN DARI HALAMAN REGISTER.HTML
@@ -154,3 +104,39 @@ if (registerForm) {
         });
     });
 }
+
+// ==========================================
+// SEMAK STATUS PENGGUNA (VERSI DETEKTIF)
+// ==========================================
+auth.onAuthStateChanged((user) => {
+    const greetingText = document.getElementById('user-greeting');
+    
+    console.log("🔍 DETEKTIF 1: Firebase Auth mengesan user?", user ? "YA - " + user.email : "TIDAK (Guest)");
+
+    if (user) {
+        // Jika ADA pengguna log masuk
+        db.collection("users").doc(user.uid).get().then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                console.log("🔍 DETEKTIF 2: Data Firestore dijumpai!", data);
+                
+                if (greetingText) {
+                    greetingText.innerHTML = `Selamat Datang, <b>${data.noMatrik}</b><br><span style="font-size: 1rem; font-weight: normal;">${data.kursus}</span>`;
+                    console.log("✅ BERJAYA: Tulisan di skrin telah ditukar.");
+                } else {
+                    console.error("❌ RALAT HTML: Tak jumpa ID 'user-greeting' di dalam calculator.html");
+                }
+            } else {
+                console.error("❌ RALAT FIRESTORE: Akaun wujud, tapi tiada data nama/matrik disimpan!");
+            }
+        }).catch((error) => {
+            console.error("❌ RALAT KESELAMATAN FIRESTORE:", error.message);
+        });
+        
+    } else {
+        // Jika TIADA pengguna log masuk (Tetamu)
+        if (greetingText) {
+            greetingText.innerHTML = `Mod Tetamu<br><span style="font-size: 1rem; font-weight: normal;">Sila pilih program anda</span>`;
+        }
+    }
+});
