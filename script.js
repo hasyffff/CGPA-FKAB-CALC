@@ -1,4 +1,3 @@
-
 // Baca mode dari URL
 const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get('mode');
