@@ -15,16 +15,23 @@ auth.onAuthStateChanged((user) => {
         console.log("🔍 Firebase mengesan user:", user.email);
         db.collection("users").doc(user.uid).get().then((doc) => {
             if (doc.exists && doc.data().dataGred) {
-                // Simpan ke variable global
                 savedGrades = doc.data().dataGred;
-                console.log("✅ Data gred ditarik dari Firebase:", savedGrades);
-                
-                // Jika page dah sedia, terus update skrin
-                if (currentProgram) {
-                    updateUI();
-                }
+                console.log("✅ Data gred ditarik dari Firebase");
+                if (currentProgram) updateUI();
             }
         });
+    } else {
+        // --- TAMBAHAN UNTUK GUEST MODE ---
+        console.log("👤 Mod Tetamu Dikesan. Cari data di LocalStorage...");
+        const guestData = localStorage.getItem('cgpa_guest');
+        
+        if (guestData) {
+            savedGrades = JSON.parse(guestData);
+            if (currentProgram) updateUI();
+        } else {
+            // Jika tiada data guest, pastikan jadual kosong
+            savedGrades = {}; 
+        }
     }
 });
 
@@ -813,9 +820,20 @@ document.addEventListener('change', function (e) {
 });
 
 function logoutUser() {
-  localStorage.removeItem('currentUser');
-  localStorage.removeItem('currentProgram');
-  window.location.href = 'index.html';
+    // 1. Beritahu Firebase untuk betul-betul log keluar
+    auth.signOut().then(() => {
+        // 2. Cuci semua kunci memori di komputer
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentProgram');
+        
+        // 3. Cuci juga data Guest lama supaya bila orang masuk Guest, ia kosong bersih
+        localStorage.removeItem('cgpa_guest'); 
+        
+        // 4. Bawa pulang ke muka depan
+        window.location.href = 'index.html';
+    }).catch((error) => {
+        console.error("Gagal log keluar:", error);
+    });
 }
 
 function updateUI() {
