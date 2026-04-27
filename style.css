@@ -981,3 +981,25 @@ button.btn-google:hover {
 .auth-form input:focus {
     border-color: #5bc0be;
 }
+
+.nav-back-container {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: flex-start; /* Tolak ke kiri */
+}
+
+.btn-back {
+    background-color: #46bb92; /* Warna kelabu gelap supaya tak terlalu terang */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #333333;
+    transform: translateX(-5px); /* Efek gerak ke kiri sikit bila hover */
+}

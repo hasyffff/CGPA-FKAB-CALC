@@ -175,6 +175,6 @@ if (guestBtn) {
         
         // 2. Beri amaran dan hantar ke pintu gerbang
         alert("⚠️ NOTA: Anda masuk sebagai Tetamu. Data gred anda akan hilang selepas anda menutup sistem ini.");
-        window.location.href = 'calculator.html'; 
+        window.location.href = './calculator.html'; 
     });
 }

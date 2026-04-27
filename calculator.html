@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="top-left-bar">
+        <button onclick="window.location.href='index.html'" class="btn-back">
+            ← Kembali
+        </button>
+    </div>
+
     <div class="top-right-nav">
         <button class="btn-logout" onclick="logoutUser()">Log Keluar</button>
     </div>
@@ -21,11 +27,8 @@
     <!-- Program Selection Page -->
     <div id="programSelection" class="container">
         <h2 id="user-greeting">Pilih Program Anda</h2>
-
-        <button class="secondary-btn" 
-        onclick="window.location.href='index.html'">
-            ← Kembali ke Laman Utama
-        </button>
+        
+    </div>
 
         <div class="program-buttons">
             <button onclick="window.location.href='calculator-electronic.html'" class="program-btn">
