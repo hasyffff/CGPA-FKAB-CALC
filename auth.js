@@ -16,66 +16,74 @@ if (!firebase.apps.length) {
 }
 
 const auth = firebase.auth();
-const db = firebase.firestore(); // BARIS INI PENTING
+const db = firebase.firestore(); 
 
 // ==========================================
-// FUNGSI LOG MASUK
+// FUNGSI LOG MASUK (GUNA MATRIK - SMART LOOKUP)
 // ==========================================
-// Pastikan baris ini ada di luar fungsi, biasanya di bahagian atas auth.js
 const loginBtn = document.getElementById('btn-login');
 
-// Pastikan fungsi ini wujud
-if (loginBtn) {
-    loginBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Ini penting supaya page tak refresh
-        
-        // ... (kod login Firebase yang kita bincang sebelum ini)
-        console.log("Butang login ditekan!"); // Tambah ini untuk kita test
-    });
-}
-
-// ==========================================
-// FUNGSI LOG MASUK (SMART REDIRECT)
-// ==========================================
 if (loginBtn) {
     loginBtn.addEventListener('click', (e) => {
         e.preventDefault();
         
         const matrik = document.getElementById('login-matrik').value.trim();
         const pw = document.getElementById('login-pw').value;
-        const loginEmail = matrik + "@student.usim.edu.my";
 
-        auth.signInWithEmailAndPassword(loginEmail, pw)
-            .then((userCredential) => {
-                const user = userCredential.user;
+        if (!matrik || !pw) {
+            alert("Sila isi No. Matrik dan Kata Laluan.");
+            return;
+        }
 
-                // Simpan status login untuk script.js guna nanti
-                localStorage.setItem('currentUser', user.uid);
+        // Langkah 1: Detektif cari Matrik dalam Firestore
+        db.collection("users").where("noMatrik", "==", matrik).get()
+        .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                alert("❌ No. Matrik tidak wujud dalam sistem. Sila daftar dahulu.");
+                throw new Error("Matrik tidak wujud"); 
+            }
 
-                // 1. Tarik data dari Firestore untuk tengok kursus apa
-                db.collection("users").doc(user.uid).get().then((doc) => {
-                    if (doc.exists) {
-                        const data = doc.data();
-
-                        // Simpan program supaya script.js tahu nak load subjek mana
-                        localStorage.setItem('currentProgram', data.kursus === "Kejuruteraan Elektronik" ? 'Electronic' : 'Electrical');
-                        
-                        // Redirect ke fail spesifik
-                        if (data.kursus === "Kejuruteraan Elektronik") {
-                            window.location.href = "calculator-electronic.html";
-                        } else {
-                            window.location.href = "calculator-electrical.html";
-                        }
-                    }
-                });
-            })
-            .catch((error) => {
-                alert("Ralat Log Masuk: " + error.message);
+            // Langkah 2: Matrik dijumpai! Ambil e-mel personal dia
+            let emailPersonal = "";
+            querySnapshot.forEach((doc) => {
+                emailPersonal = doc.data().email;
             });
-    });
-}
 
+            console.log("Detektif jumpa e-mel:", emailPersonal);
 
+            // Langkah 3: Log masuk ke Firebase guna e-mel personal tersebut
+            return auth.signInWithEmailAndPassword(emailPersonal, pw);
+        })
+        .then((userCredential) => {
+            // Langkah 4: Log masuk berjaya!
+            const user = userCredential.user;
+            localStorage.setItem('currentUser', user.uid);
+
+            // Tarik data profil untuk tahu program apa
+            return db.collection("users").doc(user.uid).get();
+        })
+        .then((doc) => {
+            if (doc && doc.exists) {
+                const data = doc.data();
+
+                // Simpan program & Redirect ke page yang betul
+                localStorage.setItem('currentProgram', data.kursus === "Kejuruteraan Elektronik" ? 'Electronic' : 'Electrical');
+                
+                if (data.kursus === "Kejuruteraan Elektronik") {
+                    window.location.href = "calculator-electronic.html";
+                } else {
+                    window.location.href = "calculator-electrical.html";
+                }
+            }
+        })
+        .catch((error) => {
+            if (error.message !== "Matrik tidak wujud") {
+                alert("❌ Ralat Log Masuk: Kata laluan salah atau masalah pelayan.");
+                console.error("Ralat Log Masuk:", error);
+            }
+        });
+    }); 
+} 
 
 // ==========================================
 // FUNGSI PENDAFTARAN (REGISTER)
@@ -88,6 +96,7 @@ if (registerForm) {
         e.preventDefault(); 
 
         const id = document.getElementById('regId').value.trim();
+        const personalEmail = document.getElementById('regEmail').value.trim();
         const program = document.getElementById('regProgram').value;
         const pass = document.getElementById('regPass').value;
         const pass2 = document.getElementById('regPass2').value;
@@ -97,16 +106,15 @@ if (registerForm) {
             return;
         }
 
-        const fakeEmail = id + "@student.usim.edu.my";
-
         // 2. Mula buat akaun (Auth)
-        auth.createUserWithEmailAndPassword(fakeEmail, pass)
+        auth.createUserWithEmailAndPassword(personalEmail, pass)
         .then((result) => {
             console.log("✅ Langkah 1: Auth berjaya! UID:", result.user.uid);
             
-            // 3. Mula simpan profil (Firestore) - PASTIKAN ADA 'return' DI DEPAN
+            // 3. Mula simpan profil (Firestore) 
             return db.collection("users").doc(result.user.uid).set({
                 noMatrik: id,
+                email: personalEmail, // <-- Laci e-mel dah ada!
                 kursus: program,
                 tarikhDaftar: new Date()
             });
@@ -114,10 +122,9 @@ if (registerForm) {
         .then(() => {
             console.log("✅ Langkah 2: Firestore berjaya simpan profil!");
             alert('Akaun berjaya didaftar! Sila log masuk.');
-            window.location.href = 'index.html'; // Bawa balik ke page login
+            window.location.href = 'index.html'; 
         })
         .catch((error) => {
-            // Jika ada apa-apa yang gagal, ia akan menjerit di sini!
             console.error("❌ RALAT PENDAFTARAN:", error);
             alert("Pendaftaran tergendala: " + error.message);
         });
@@ -133,7 +140,6 @@ auth.onAuthStateChanged((user) => {
     console.log("🔍 DETEKTIF 1: Firebase Auth mengesan user?", user ? "YA - " + user.email : "TIDAK (Guest)");
 
     if (user) {
-        // Jika ADA pengguna log masuk
         db.collection("users").doc(user.uid).get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
@@ -141,19 +147,13 @@ auth.onAuthStateChanged((user) => {
                 
                 if (greetingText) {
                     greetingText.innerHTML = `Selamat Datang, <b>${data.noMatrik}</b><br><span style="font-size: 1rem; font-weight: normal;">${data.kursus}</span>`;
-                    console.log("✅ BERJAYA: Tulisan di skrin telah ditukar.");
-                } else {
-                    console.error("❌ RALAT HTML: Tak jumpa ID 'user-greeting' di dalam calculator.html");
                 }
-            } else {
-                console.error("❌ RALAT FIRESTORE: Akaun wujud, tapi tiada data nama/matrik disimpan!");
-            }
+            } 
         }).catch((error) => {
             console.error("❌ RALAT KESELAMATAN FIRESTORE:", error.message);
         });
         
     } else {
-        // Jika TIADA pengguna log masuk (Tetamu)
         if (greetingText) {
             greetingText.innerHTML = `Mod Tetamu<br><span style="font-size: 1rem; font-weight: normal;">Sila pilih program anda</span>`;
         }
@@ -169,12 +169,50 @@ if (guestBtn) {
     guestBtn.addEventListener('click', (e) => {
         e.preventDefault(); 
         
-        // 1. CUCI DATA LAMA DI SINI (Supaya tak melompat ke page sebelum ni)
         localStorage.removeItem('currentUser');
         localStorage.removeItem('currentProgram');
         
-        // 2. Beri amaran dan hantar ke pintu gerbang
         alert("⚠️ NOTA: Anda masuk sebagai Tetamu. Data gred anda akan hilang selepas anda menutup sistem ini.");
         window.location.href = './calculator.html'; 
+    });
+}
+
+// ==========================================
+// FUNGSI LUPA KATA LALUAN (GUNA MATRIK - SMART LOOKUP)
+// ==========================================
+function forgotPassword() {
+    let matrik = prompt("Sila masukkan No. Matrik anda:");
+    if (!matrik) return;
+    matrik = matrik.trim();
+
+    db.collection("users").where("noMatrik", "==", matrik).get()
+    .then((querySnapshot) => {
+        if (querySnapshot.empty) {
+            alert("❌ No. Matrik ini tidak dijumpai dalam sistem. Sila daftar dahulu.");
+            throw new Error("Matrik tidak wujud");
+        }
+
+        let emailPersonal = "";
+        querySnapshot.forEach((doc) => {
+            emailPersonal = doc.data().email; 
+        });
+
+        // DETEKTIF CHECK: E-mel ada tak?
+        if (!emailPersonal) {
+            alert("❌ Ralat Data: Profil anda tiada rekod e-mel personal. Sila hubungi Admin untuk reset manual.");
+            throw new Error("E-mel tiada dalam database");
+        }
+
+        console.log("Menghantar reset ke:", emailPersonal);
+
+        return auth.sendPasswordResetEmail(emailPersonal)
+        .then(() => {
+            alert("✅ Berjaya!\nPautan reset telah dihantar ke e-mel personal anda:\n" + emailPersonal);
+        });
+    })
+    .catch((error) => {
+        if (error.message !== "Matrik tidak wujud" && error.message !== "E-mel tiada dalam database") {
+            alert("❌ Ralat: " + error.message);
+        }
     });
 }
