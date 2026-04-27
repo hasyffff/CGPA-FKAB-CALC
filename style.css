@@ -1003,3 +1003,35 @@ button.btn-google:hover {
     background-color: #333333;
     transform: translateX(-5px); /* Efek gerak ke kiri sikit bila hover */
 }
+
+/* Untuk Skrin Telefon (Bawah 600px) */
+@media screen and (max-width: 600px) {
+    .container {
+        width: 95%; /* Guna hampir keseluruhan skrin */
+        padding: 10px;
+    }
+
+    h1 { font-size: 1.5rem; }
+
+    /* Jadual boleh diskrol ke tepi supaya tak pecah */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Biar skrol rasa 'smooth' di iPhone */
+    }
+
+    .subject-table th, .subject-table td {
+        font-size: 0.8rem; /* Kecilkan tulisan sikit */
+        padding: 8px 4px;
+    }
+
+    /* Butang jadi lebar penuh supaya senang tekan guna ibu jari */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-danger {
+        width: 100%;
+    }
+}

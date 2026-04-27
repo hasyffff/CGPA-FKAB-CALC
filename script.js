@@ -215,7 +215,8 @@ function createSemesterContent(semNum, subjects) {
             <p>Jumlah Kredit: <strong>${totalCredits}</strong></p>
         </div>
         
-        <table class="subject-table">
+        <div class="table-responsive">
+            <table class="subject-table">
             <thead>
                 <tr>
                     <th style="width: 12%">Kod</th>
@@ -227,6 +228,7 @@ function createSemesterContent(semNum, subjects) {
                 </tr>
             </thead>
             <tbody>
+        </div>
     `;
     
     subjects.forEach((subject, index) => {
