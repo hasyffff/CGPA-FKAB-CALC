@@ -21,15 +21,16 @@ auth.onAuthStateChanged((user) => {
             }
         });
     } else {
-        // --- TAMBAHAN UNTUK GUEST MODE ---
-        console.log("👤 Mod Tetamu Dikesan. Cari data di LocalStorage...");
-        const guestData = localStorage.getItem('cgpa_guest');
+       // --- UBAH DI SINI UNTUK GUEST MODE ---
+        console.log("👤 Mod Tetamu Dikesan. Cari data sementara (sessionStorage)...");
+        
+        // Tukar localStorage kepada sessionStorage
+        const guestData = sessionStorage.getItem('cgpa_guest');
         
         if (guestData) {
             savedGrades = JSON.parse(guestData);
             if (currentProgram) updateUI();
         } else {
-            // Jika tiada data guest, pastikan jadual kosong
             savedGrades = {}; 
         }
     }
@@ -422,8 +423,8 @@ function saveData() {
         });
     } else {
         // Jika Mod Tetamu (Guest), simpan dalam komputer sahaja
-        localStorage.setItem('cgpa_guest', JSON.stringify(savedGrades));
-        alert("⚠️ Anda dalam Mod Tetamu. Data disimpan pada peranti ini sahaja.");
+        sessionStorage.setItem('cgpa_guest', JSON.stringify(savedGrades));
+        alert("⚠️ Mod Tetamu: Data hanya disimpan sementara. Ia akan terpadam secara automatik apabila anda menutup pelayar (browser) ini.");
     }
 }
 
