@@ -4,22 +4,54 @@ const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get('mode');
 const studentId = urlParams.get('id');
 
+// 1. Biarkan ID Matrik dipapar jika ada (Jangan usik)
 if (mode === 'login' && studentId) {
-    // Papar ID di header
-    document.body.insertAdjacentHTML('afterbegin', '<div style="text-align:center; padding:10px; background:#007bff; color:white;">ID: ' + studentId + '</div>');
-    
-    // Load data
-    const saved = localStorage.getItem('cgpa_' + studentId);
-    if (saved) {
-        // Load data ke form (sesuaikan dengan struktur kalkulator anda)
-    }
+    document.body.insertAdjacentHTML('afterbegin', `<div style="text-align:center; padding:10px; background:#1a1a2e; color:white;">No. Matrik: ${studentId}</div>`);
 }
 
+// 2. PINDAHKAN INI KE LUAR (Supaya dia sentiasa "mendengar" Firebase)
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        console.log("🔍 Firebase mengesan user:", user.email);
+        db.collection("users").doc(user.uid).get().then((doc) => {
+            if (doc.exists && doc.data().dataGred) {
+                // Simpan ke variable global
+                savedGrades = doc.data().dataGred;
+                console.log("✅ Data gred ditarik dari Firebase:", savedGrades);
+                
+                // Jika page dah sedia, terus update skrin
+                if (currentProgram) {
+                    updateUI();
+                }
+            }
+        });
+    }
+});
+
 // Bila simpan CGPA, tambah:
+// Gantian untuk Baris 19-24
 function simpanCGPA() {
-    if (mode === 'login' && studentId) {
-        // Simpan data
-        localStorage.setItem('cgpa_' + studentId, JSON.stringify({/* data anda */}));
+    const user = auth.currentUser; // Kenali siapa yang tengah login
+
+    if (user && mode === 'login') {
+        // Ambil semua gred yang Hasif dah isi dalam form/variable
+        // Pastikan variable 'savedGrades' (atau apa-apa nama variable gred Hasif) ada data
+        
+        db.collection("users").doc(user.uid).update({
+            dataGred: savedGrades, // Simpan array/object gred ke Firestore
+            lastUpdated: new Date()
+        })
+        .then(() => {
+            alert("✅ Data berjaya disimpan ke awan! Anda boleh akses di mana-mana peranti.");
+        })
+        .catch((error) => {
+            console.error("Ralat simpan awan:", error);
+            // Backup kalau cloud gagal, simpan ke local
+            localStorage.setItem('cgpa_' + studentId, JSON.stringify(savedGrades));
+        });
+    } else {
+        alert("⚠️ Anda dalam mod Tetamu. Data disimpan pada peranti ini sahaja.");
+        localStorage.setItem('cgpa_guest', JSON.stringify(savedGrades));
     }
 }
 
@@ -75,10 +107,16 @@ function selectProgram(programType) {
       titleElem.textContent = program.fullName;
   }
 
-  // Tarik data subjek
-  loadSavedData();
+  // 1. Tarik data & Bina jadual dahulu
+  //loadSavedData();
+  
   initializeSemesters();
   showSemester(1);
+
+  // 2. BARU panggil updateUI untuk isi gred (INI YANG KITA TAMBAH)
+  if (typeof updateUI === "function") {
+      updateUI();
+  }
 
   // Sorok/Papar elemen JIKA ia wujud dalam HTML tersebut
   const progSel = document.getElementById('programSelection');
@@ -196,7 +234,7 @@ function createSemesterContent(semNum, subjects) {
                 <td>${subject.kredit}</td>
                 <td><span class="badge">${subject.taraf}</span></td>
                 <td>
-                    <select id="grade-${subjectId}" onchange="saveGradeInput('${subjectId}')">
+                    <select id="grade-${subject.kod}" onchange="saveGradeInput('${subject.kod}')">
                         <option value="">- Pilih -</option>
                         ${createGradeOptions(savedGrade)}
                     </select>
@@ -341,9 +379,13 @@ function removeKOKU(kokuId) {
 // ============================================
 // GRADE INPUT & STORAGE
 // ============================================
-function saveGradeInput(subjectId) {
-    const gradeSelect = document.getElementById(`grade-${subjectId}`);
-    savedGrades[subjectId] = gradeSelect.value;
+function saveGradeInput(kodSubjek) {
+    const gradeSelect = document.getElementById(`grade-${kodSubjek}`);
+    if (gradeSelect) {
+        savedGrades[kodSubjek] = gradeSelect.value;
+        // Kita simpan ke localStorage sebagai backup pantas
+        //saveData(); 
+    }
 }
 
 function toggleSubject(subjectId) {
@@ -351,16 +393,31 @@ function toggleSubject(subjectId) {
     savedGrades[`${subjectId}-taken`] = checkbox.checked;
 }
 
+// ============================================
+// FUNGSI SIMPAN DATA KE FIREBASE
+// ============================================
 function saveData() {
-  if (!studentId) return; // pastikan datang dari user login
+    const user = auth.currentUser; // Kenal pasti siapa yang login
 
-  const dataToSave = {
-    program: currentProgram,
-    grades: savedGrades,
-    timestamp: new Date().toISOString()
-  };
-
-  localStorage.setItem('cgpa_' + studentId, JSON.stringify(dataToSave));
+    if (user) {
+        // Jika ada user login, simpan terus ke akaun (Awan/Firestore)
+        db.collection("users").doc(user.uid).update({
+            dataGred: savedGrades,
+            lastUpdated: new Date()
+        })
+        .then(() => {
+            alert("✅ Tahniah! Data gred berjaya disimpan ke dalam akaun USIM anda.");
+            console.log("Data disimpan:", savedGrades);
+        })
+        .catch((error) => {
+            console.error("❌ Ralat simpan awan:", error);
+            alert("Gagal menyimpan data ke awan. Sila cuba lagi.");
+        });
+    } else {
+        // Jika Mod Tetamu (Guest), simpan dalam komputer sahaja
+        localStorage.setItem('cgpa_guest', JSON.stringify(savedGrades));
+        alert("⚠️ Anda dalam Mod Tetamu. Data disimpan pada peranti ini sahaja.");
+    }
 }
 
 function loadSavedData() {
@@ -391,7 +448,7 @@ function clearAll() {
 // ============================================
 // CGPA CALCULATION
 // ============================================
-function calculateAll() {
+function calculateAll(isSenyap = false) {
     const program = programmes[currentProgram];
     let totalGradePoints = 0;
     let totalCredits = 0;
@@ -403,9 +460,9 @@ function calculateAll() {
         let semCredits = 0;
         
         subjects.forEach((subject, index) => {
-            const subjectId = `${semNum}-${index}`;
-            const grade = document.getElementById(`grade-${subjectId}`)?.value;
-            const isTaken = document.getElementById(`taken-${subjectId}`)?.checked !== false;
+            // Tukar carian ID menggunakan subject.kod
+            const grade = document.getElementById(`grade-${subject.kod}`)?.value;
+            const isTaken = document.getElementById(`taken-${subject.kod}`)?.checked !== false;
             
             if (grade && isTaken) {
                 const points = gradePoints[grade] * subject.kredit;
@@ -458,10 +515,13 @@ function calculateAll() {
     }
     // --- TAMAT LOGIK ANUGERAH DEKAN ---
 
-    if (totalCredits > 0) {
-        alert(`✓ Pengiraan selesai!\n\nCGPA Keseluruhan: ${cgpa}\nJumlah Kredit: ${totalCredits}`);
-    } else {
-        alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
+    // Cari bahagian ni dan letak if (!isSenyap)
+    if (!isSenyap) {
+        if (totalCredits > 0) {
+            alert(`✓ Pengiraan selesai!\n\nCGPA Keseluruhan: ${cgpa}\nJumlah Kredit: ${totalCredits}`);
+        } else {
+            alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
+        }
     }
 }
 
@@ -756,4 +816,47 @@ function logoutUser() {
   localStorage.removeItem('currentUser');
   localStorage.removeItem('currentProgram');
   window.location.href = 'index.html';
+}
+
+function updateUI() {
+    if (!savedGrades || Object.keys(savedGrades).length === 0) return;
+
+    console.log("Memuatkan gred ke skrin...");
+
+    for (const kodSubjek in savedGrades) {
+        // Cari id grade-ECC3022
+        const selectElem = document.getElementById(`grade-${kodSubjek}`);
+        
+        if (selectElem) {
+            selectElem.value = savedGrades[kodSubjek];
+        }
+    }
+    // Selepas isi semua, kira terus
+    calculateAll(true); 
+}
+
+function showSemester(semNum) {
+    document.querySelectorAll('.semester-data').forEach(sem => {
+        sem.classList.remove('active');
+    });
+    
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Ini kalau ada ralat takpe, cuma untuk keselamatan
+    const semDiv = document.getElementById(`semester-${semNum}`);
+    if (semDiv) semDiv.classList.add('active');
+    
+    const tabs = document.querySelectorAll('.tab');
+    if (tabs[semNum - 1]) tabs[semNum - 1].classList.add('active');
+    
+    // Update variable global supaya sistem tahu kita kat Sem berapa
+    currentSemester = semNum;
+
+    // --- TAMBAH BARIS INI ---
+    // Arahkan sistem kemaskini kotak GPA dan CGPA di bawah secara senyap
+    if (typeof calculateAll === "function") {
+        calculateAll(true); 
+    }
 }
