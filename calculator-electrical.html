@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGPA Calculator - Fakulti Kejuruteraan dan Alam Bina</title>
+    <title>Kalkulator Elektronik - USIM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,39 +14,16 @@
 
     <header>
        <h1>CGPA Calculator</h1>
-       <p>(Faculty of Engineering and Built Environment)</p>
-       </header>
+       <p>(Kejuruteraan Elektrikal)</p>
+    </header>
 
-    <!-- Program Selection Page -->
-    <div id="programSelection" class="container">
-        <h2 id="user-greeting">Pilih Program Anda</h2>
-
-        <button class="secondary-btn" 
-        onclick="window.location.href='index.html'">
-            ← Kembali ke Laman Utama
-        </button>
-
-        <div class="program-buttons">
-            <button onclick="window.location.href='calculator-electronic.html'" class="program-btn">
-                <h3>Kejuruteraan Elektronik</h3>
-                <p>Bachelor of Electronic Engineering with Honours</p>
-            </button>
-            
-            <button onclick="window.location.href='calculator-electrical.html'" class="program-btn">
-                <h3>Kejuruteraan Elektrik</h3>
-                <p>Bachelor of Electrical Engineering with Honours</p>
-            </button>
-        </div>
+    <div id="programSelection" class="container" style="display: none;">
+        <h2>Pilih Program Anda</h2>
     </div>
 
-    <!-- Calculator Page (Hidden initially) -->
-    <div id="calculatorPage" class="container" style="display: none;">
-        <!-- Back button -->
-        <button onclick="goBack()" class="back-btn">← Tukar Program</button>
-        
-        <h2 id="programTitle"></h2>
+    <div id="calculatorPage" class="container" style="display: block;">
+        <h2 id="programTitle">Bachelor of Electronic Engineering with Honours</h2>
 
-        <!-- Current Semester Selector -->
         <div class="semester-selector">
             <label>Saya sekarang di: </label>
             <select id="currentSemester" onchange="updateVisibleSemesters()">
@@ -60,42 +36,11 @@
                 <option value="7">Semester 7</option>
                 <option value="8">Semester 8</option>
             </select>
-        <div id="guestModeOptions" class="guest-options" style="display:none;">
-            <h3>Bagaimana anda mahu guna kalkulator?</h3><label>
-            <input type="radio" name="guestMode" value="full" checked>
-            Saya mahu masukkan gred untuk semua semester
-        </label>
-        <label>
-            <input type="radio" name="guestMode" value="single">
-            Saya hanya mahu kira satu semester
-        </label>
-
-        <div id="singleSemSelector" style="margin-top:10px; display:none;">
-            <label>Pilih semester:</label>
-            <select id="guestSingleSem">
-            <option value="1">Semester 1</option>
-            <option value="2">Semester 2</option>
-            <option value="3">Semester 3</option>
-            <option value="4">Semester 4</option>
-            <option value="5">Semester 5</option>
-            <option value="6">Semester 6</option>
-            <option value="7">Semester 7</option>
-            <option value="8">Semester 8</option>
-            </select>
-                </div>
-                <button class="btn-primary" onclick="startGuestCalculator()">
-            Teruskan ke kalkulator
-            </button>
-            </div>
         </div>
 
-        <!-- Semester Tabs -->
         <div class="tabs" id="semesterTabs"></div>
-
-        <!-- Semester Content -->
         <div id="semesterContent"></div>
 
-        <!-- Results Section -->
         <div class="results" id="results">
             <h3>Keputusan</h3>
             <div class="result-box">
@@ -111,14 +56,12 @@
             <div id="dekanMessage" class="dekan-alert" style="display: none;"></div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="action-buttons">
             <button onclick="calculateAll()" class="btn-primary">Kira CGPA</button>
             <button onclick="saveData()" class="btn-secondary">Simpan Data</button>
             <button onclick="clearAll()" class="btn-danger">Reset Semua</button>
         </div>
 
-        <!-- Prediction Calculator -->
         <div class="prediction-section">
             <h3>🎯 Kalkulator Ramalan CGPA</h3>
             <div class="prediction-input">
@@ -128,21 +71,29 @@
             </div>
             <div id="predictionResults" class="prediction-results"></div>
         </div>
+        </div> 
+
     </div>
 
     <footer>
         <p>© 2026 | Developed by Hasyf</p>
     </footer>
 
-    <!-- Load data & logic -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <script src="auth.js"></script>
     <script src="data.js"></script>
     <script src="script.js"></script>
-</body>
 
+    <script>
+        window.onload = function() {
+            // Kita panggil fungsi selectProgram yang ada dalam script.js secara automatik
+            if (typeof selectProgram === "function") {
+                selectProgram('Electrical');
+            }
+        };
+    </script>
 </body>
 </html>

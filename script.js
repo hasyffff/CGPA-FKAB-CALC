@@ -46,29 +46,52 @@ if (currentUser && storedProgram) {
   document.getElementById('calculatorPage').style.display = 'none';
 }
 
+// AUTO-LOAD PROGRAM SEBAIK PAGE DIBUKA
+window.addEventListener('DOMContentLoaded', () => {
+    const storedProgram = localStorage.getItem('currentProgram');
+    const isGuest = !localStorage.getItem('currentUser');
+
+    if (storedProgram) {
+        // Jika user login, terus select program mereka
+        selectProgram(storedProgram);
+    } else if (isGuest && window.location.pathname.includes('calculator.html')) {
+        // Jika guest, biar dia pilih di calculator.html
+        document.getElementById('programSelection').style.display = 'block';
+    }
+});
+
 // ============================================
-// PROGRAM SELECTION
+// PROGRAM SELECTION (VERSI KEBAL)
 // ============================================
 function selectProgram(programType) {
   currentProgram = programType;
   localStorage.setItem('currentProgram', programType);
 
   const program = programmes[programType];
-  document.getElementById('programTitle').textContent = program.fullName;
+  
+  // Update tajuk jika ada
+  const titleElem = document.getElementById('programTitle');
+  if (titleElem) {
+      titleElem.textContent = program.fullName;
+  }
 
+  // Tarik data subjek
   loadSavedData();
   initializeSemesters();
   showSemester(1);
 
- if (currentUser) {
-  document.getElementById('programSelection').style.display = 'none';
-  document.getElementById('calculatorPage').style.display = 'block';
-} else {
-  document.getElementById('programSelection').style.display = 'none';
-  document.getElementById('guestModeOptions').style.display = 'block';
-  document.getElementById('calculatorPage').style.display = 'block'; // sebab guestModeOptions kini DI DALAM calculatorPage
-}
+  // Sorok/Papar elemen JIKA ia wujud dalam HTML tersebut
+  const progSel = document.getElementById('programSelection');
+  const calcPage = document.getElementById('calculatorPage');
+  const guestOpts = document.getElementById('guestModeOptions');
 
+  if (progSel) progSel.style.display = 'none';
+  if (calcPage) calcPage.style.display = 'block';
+
+  // Khas untuk Guest jika ada kotak options
+  if (!currentUser && guestOpts) {
+      guestOpts.style.display = 'block';
+  }
 }
 
 
@@ -441,12 +464,6 @@ function calculateAll() {
         alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
     }
 }
-
-    if (totalCredits > 0) {
-        alert(`✓ Pengiraan selesai!\n\nCGPA Keseluruhan: ${cgpa}\nJumlah Kredit: ${totalCredits}`);
-    } else {
-        alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
-    }
 
 
 // ============================================

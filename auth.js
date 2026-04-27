@@ -11,45 +11,66 @@ const firebaseConfig = {
     measurementId: "G-BX9P0PEEF0"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 const auth = firebase.auth();
-const db = firebase.firestore();
+const db = firebase.firestore(); // BARIS INI PENTING
 
 // ==========================================
-// 4. FUNGSI LOG MASUK
+// FUNGSI LOG MASUK
 // ==========================================
+// Pastikan baris ini ada di luar fungsi, biasanya di bahagian atas auth.js
 const loginBtn = document.getElementById('btn-login');
 
+// Pastikan fungsi ini wujud
+if (loginBtn) {
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Ini penting supaya page tak refresh
+        
+        // ... (kod login Firebase yang kita bincang sebelum ini)
+        console.log("Butang login ditekan!"); // Tambah ini untuk kita test
+    });
+}
+
+// ==========================================
+// FUNGSI LOG MASUK (SMART REDIRECT)
+// ==========================================
 if (loginBtn) {
     loginBtn.addEventListener('click', (e) => {
         e.preventDefault();
-
+        
         const matrik = document.getElementById('login-matrik').value.trim();
         const pw = document.getElementById('login-pw').value;
-
-        if (!matrik || !pw) {
-            alert("Sila masukkan No. Matrik dan Kata Laluan!");
-            return;
-        }
-
-        // Tukar No. Matrik kepada format e-mel "palsu" yang kita daftar tempoh hari
         const loginEmail = matrik + "@student.usim.edu.my";
 
-        // Minta Firebase semak adakah ID dan Password ini wujud & betul
         auth.signInWithEmailAndPassword(loginEmail, pw)
             .then((userCredential) => {
-                // Log masuk berjaya!
-                alert("Berjaya log masuk! Selamat kembali.");
-                window.location.href = "calculator.html";
+                const user = userCredential.user;
+
+                // Simpan status login untuk script.js guna nanti
+                localStorage.setItem('currentUser', user.uid);
+
+                // 1. Tarik data dari Firestore untuk tengok kursus apa
+                db.collection("users").doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+
+                        // Simpan program supaya script.js tahu nak load subjek mana
+                        localStorage.setItem('currentProgram', data.kursus === "Kejuruteraan Elektronik" ? 'Electronic' : 'Electrical');
+                        
+                        // Redirect ke fail spesifik
+                        if (data.kursus === "Kejuruteraan Elektronik") {
+                            window.location.href = "calculator-electronic.html";
+                        } else {
+                            window.location.href = "calculator-electrical.html";
+                        }
+                    }
+                });
             })
             .catch((error) => {
-                // Jika salah password atau belum daftar
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-login-credentials') {
-                    alert("Ralat: No. Matrik tidak wujud atau kata laluan salah.");
-                } else {
-                    alert("Ralat Log Masuk: " + error.message);
-                }
+                alert("Ralat Log Masuk: " + error.message);
             });
     });
 }
@@ -57,50 +78,48 @@ if (loginBtn) {
 
 
 // ==========================================
-// FUNGSI PENDAFTARAN DARI HALAMAN REGISTER.HTML
+// FUNGSI PENDAFTARAN (REGISTER)
 // ==========================================
 const registerForm = document.getElementById('registerForm');
 
 if (registerForm) {
-    registerForm.addEventListener('submit', function (e) {
-        e.preventDefault(); // Halang page dari refresh bila tekan butang submit
+    registerForm.addEventListener('submit', (e) => {
+        // 1. INI PALING PENTING: Halang page dari ter-refresh awal!
+        e.preventDefault(); 
 
-        // Ambil data dari kotak form Hasif
         const id = document.getElementById('regId').value.trim();
         const program = document.getElementById('regProgram').value;
         const pass = document.getElementById('regPass').value;
         const pass2 = document.getElementById('regPass2').value;
 
-        // 1. Semak kata laluan
         if (pass !== pass2) {
             alert('Ralat: Kata laluan tidak sepadan!');
             return;
         }
 
-        // 2. Trik E-mel USIM untuk Firebase
         const fakeEmail = id + "@student.usim.edu.my";
 
-        // 3. Hantar data ke Firebase Authentication
-        auth.createUserWithEmailAndPassword(fakeEmail, pass).then((result) => {
+        // 2. Mula buat akaun (Auth)
+        auth.createUserWithEmailAndPassword(fakeEmail, pass)
+        .then((result) => {
+            console.log("✅ Langkah 1: Auth berjaya! UID:", result.user.uid);
             
-            // 4. Jika berjaya, simpan ID dan Program ke dalam Firestore Database
-            db.collection("users").doc(result.user.uid).set({
+            // 3. Mula simpan profil (Firestore) - PASTIKAN ADA 'return' DI DEPAN
+            return db.collection("users").doc(result.user.uid).set({
                 noMatrik: id,
                 kursus: program,
                 tarikhDaftar: new Date()
-            }).then(() => {
-                alert('Akaun berjaya didaftar! Selamat datang.');
-                // Terus bawa ke kalkulator
-                window.location.href = 'calculator.html';
             });
-
-        }).catch((error) => {
-            // Jika ID sudah wujud di Firebase, ia akan keluar di sini
-            if(error.code === 'auth/email-already-in-use') {
-                alert('ID pelajar ini sudah berdaftar dalam sistem!');
-            } else {
-                alert("Ralat Pendaftaran: " + error.message);
-            }
+        })
+        .then(() => {
+            console.log("✅ Langkah 2: Firestore berjaya simpan profil!");
+            alert('Akaun berjaya didaftar! Sila log masuk.');
+            window.location.href = 'index.html'; // Bawa balik ke page login
+        })
+        .catch((error) => {
+            // Jika ada apa-apa yang gagal, ia akan menjerit di sini!
+            console.error("❌ RALAT PENDAFTARAN:", error);
+            alert("Pendaftaran tergendala: " + error.message);
         });
     });
 }
@@ -140,3 +159,22 @@ auth.onAuthStateChanged((user) => {
         }
     }
 });
+
+// ==========================================
+// FUNGSI MOD TETAMU (GUEST LALUAN C)
+// ==========================================
+const guestBtn = document.getElementById('btn-guest');
+
+if (guestBtn) {
+    guestBtn.addEventListener('click', (e) => {
+        e.preventDefault(); 
+        
+        // 1. CUCI DATA LAMA DI SINI (Supaya tak melompat ke page sebelum ni)
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentProgram');
+        
+        // 2. Beri amaran dan hantar ke pintu gerbang
+        alert("⚠️ NOTA: Anda masuk sebagai Tetamu. Data gred anda akan hilang selepas anda menutup sistem ini.");
+        window.location.href = 'calculator.html'; 
+    });
+}
