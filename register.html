@@ -1,45 +1,96 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daftar - CGPA Calculator</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="theme-color" content="#0B132B">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>Daftar Akaun - Kalkulator CGPA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css?v=6.0">
 </head>
 
-<body class="auth-page">
-  <div class="home-container">
-    <h1>Daftar Akaun</h1>
-    <p class="subtitle">Cipta akaun untuk simpan rekod CGPA anda</p>
+<body style="background-color: #0B132B; margin: 0; padding: 0; box-sizing: border-box;">
 
-    <form id="registerForm">
-      <input type="text" id="regId" placeholder="ID Pelajar" required>
+    <div class="register-wrapper">
+        <div class="register-card">
+            <div class="register-header">
+                <h2>Daftar Akaun</h2>
+                <p>Cipta akaun untuk simpan rekod CGPA anda</p>
+            </div>
 
-      <input type="email" id="regEmail" placeholder="E-mel Personal (Gmail)" required>
+            <form id="registerForm">
+                
+                <div class="custom-input-group">
+                    <label>Nama Penuh</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="reg-nama" placeholder="Contoh: MUHAMMAD HASIF" required>
+                    </div>
+                </div>
 
-      <label>Program Pengajian:</label>
-      <select id="regProgram" required>
-        <option value="">-- Sila Pilih Program --</option>
-        <option value="Kejuruteraan Elektronik">Kejuruteraan Elektronik</option>
-        <option value="Kejuruteraan Elektrik">Kejuruteraan Elektrik</option>
-      </select>
+                <div class="custom-input-group">
+                    <label>ID Pelajar (No. Matrik)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🆔</span>
+                        <input type="text" id="regId" placeholder="Contoh: 1222017" required>
+                    </div>
+                </div>
+                
+                <div class="custom-input-group">
+                    <label>E-mel Personal (Gmail)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="regEmail" placeholder="student@gmail.com" required>
+                    </div>
+                </div>
 
-      <input type="password" id="regPass" placeholder="Kata laluan" required>
-      <input type="password" id="regPass2" placeholder="Ulang kata laluan" required>
+                <div class="custom-input-group">
+                    <label>Program Pengajian</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🎓</span>
+                        <select id="regProgram" required>
+                            <option value="" disabled selected>-- Sila Pilih Program --</option>
+                            <option value="Kejuruteraan Elektronik">Kejuruteraan Elektronik (QK86)</option>
+                            <option value="Kejuruteraan Elektrik">Kejuruteraan Elektrik (QK87)</option>
+                        </select>
+                    </div>
+                </div>
 
-      <button type="submit" class="btn btn-primary">Daftar</button>
-    </form>
+                <div class="custom-input-group">
+                    <label>Kata Laluan</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="regPass" placeholder="Minima 6 karakter" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('regPass', this)">👁️</span>
+                    </div>
+                </div>
 
-    <p class="link-text">
-      Sudah ada akaun?
-      <a href="index.html">Log masuk di sini</a>
-    </p>
-  </div>
+                <div class="custom-input-group">
+                    <label>Ulang Kata Laluan</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🛡️</span>
+                        <input type="password" id="regPass2" placeholder="Sahkan kata laluan anda" required>
+                        <span class="password-toggle" onclick="togglePasswordVisibility('regPass2', this)">👁️</span>
+                    </div>
+                </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-  
-  <script src="auth.js"></script>
+                <button type="submit" class="btn-register-main">Daftar Sekarang</button>
+            </form>
+
+            <div class="register-footer">
+                <p>Sudah ada akaun? <a href="index.html">Log masuk di sini</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="auth.js?v=6.0"></script>
+    
 </body>
 </html>

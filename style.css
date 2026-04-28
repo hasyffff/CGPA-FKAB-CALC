@@ -1,3 +1,21 @@
+/* ========================================= */
+/* GLOBAL RESET (WAJIB ADA UNTUK ELAK CACAT) */
+/* ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box !important;
+}
+
+/* --- TAMBAH KOD INI SUPAYA WARNA PENUH SATU SKRIN --- */
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #0B132B !important; /* Warna Deep Navy dipaksa ke seluruh skrin */
+    color: #ffffff;
+    overflow-x: hidden; /* Elak skrin boleh meleret ke kiri/kanan (horizontal scroll) */
+}
+
 :root {
   --bg-black: #050505;
   --dark-blue: #0b132b;
@@ -1148,4 +1166,313 @@ button.btn-google:hover {
 .custom-select-dropdown::-webkit-scrollbar-thumb {
     background: #5bc0be;
     border-radius: 4px;
+}
+
+/* --- BESARKAN KOTAK DROPDOWN (PROGRAM) --- */
+select {
+    padding: 7px 10px !important; /* Tambah ruang atas/bawah dan kiri/kanan */
+    font-size: 1rem !important; /* Besarkan sedikit tulisan */
+    border-radius: 5%;
+    height: auto !important; /* Elak kotak terpotong */
+    cursor: pointer;
+}
+
+select option {
+    padding: 10px; /* Jarakkan setiap pilihan dalam senarai */
+    font-size: 1rem;
+}
+
+/* --- KOTAK KATA LALUAN (UNTUK BUTANG MATA) --- */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 40px; /* Tinggalkan ruang untuk ikon mata di sebelah kanan */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    user-select: none;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+}
+
+/* --- LAYOUT PENDAFTARAN (WARNA ASAL DIKEMBALIKAN) --- */
+.register-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* WARNA ASAL: Biru Kelasi Pekat (Deep Navy) */
+    background-color: #0B132B; 
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-card {
+    /* WARNA ASAL: Biru kad yang sedikit cerah dari background */
+    background: #1C2541; 
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    /* Garisan border yang sangat halus */
+    border: 1px solid #3A506B; 
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.register-header h2 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.register-header p {
+    color: #A0AAB2; /* Kelabu kebiruan yang lembut */
+    font-size: 0.9rem;
+}
+
+/* --- INPUT & SELECT STYLING --- */
+.custom-input-group {
+    margin-bottom: 22px;
+}
+
+.custom-input-group label {
+    display: block;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    font-size: 1.1rem;
+    z-index: 5;
+    /* Tukar ikon jadi warna turquoise supaya masuk tema */
+    color: #5bc0be; 
+    opacity: 0.8;
+}
+
+/* Style untuk Input & Select */
+.input-wrapper input, 
+.input-wrapper select {
+    width: 100%;
+    padding: 14px 15px 14px 48px; 
+    /* WARNA ASAL: Gelap sama macam background utama */
+    background-color: #0B132B !important; 
+    border: 1px solid #3A506B;
+    border-radius: 8px;
+    color: #ffffff !important;
+    font-size: 0.95rem;
+    transition: 0.3s ease;
+    appearance: none; 
+}
+
+/* Efek Glow bila klik */
+.input-wrapper input:focus, 
+.input-wrapper select:focus {
+    border-color: #5bc0be;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(91, 192, 190, 0.2);
+}
+
+/* --- DROPDOWN ARROW --- */
+.input-wrapper select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235bc0be'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 18px;
+}
+
+/* --- BUTTON REGISTER --- */
+.btn-register-main {
+    width: 100%;
+    padding: 15px;
+    /* WARNA ASAL: Turquoise / Teal */
+    background-color: #5bc0be; 
+    border: none;
+    border-radius: 8px;
+    color: #0B132B;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+}
+
+.btn-register-main:hover {
+    background-color: #48a6a4;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(91, 192, 190, 0.3);
+}
+
+/* --- FOOTER & Ikon Mata --- */
+.register-footer {
+    margin-top: 25px;
+    text-align: center;
+    color: #123d61;
+    font-size: 0.85rem;
+}
+
+.register-footer a {
+    color: #5bc0be;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.7;
+    transition: 0.2s;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
+/* ========================================= */
+/* KAD PROFIL PREMIUM (ULTRA-KEMAS)          */
+/* ========================================= */
+.student-info-card {
+    background: linear-gradient(135deg, #1C2541 0%, #0B132B 100%);
+    border: 1px solid rgba(91, 192, 190, 0.3);
+    border-radius: 12px;
+    padding: 20px 25px;
+    
+    /* --- INI KOD RAHSIA UNTUK SAMAKAN LEBAR --- */
+    width: 100%; 
+    max-width: 1000px; /* Anggaran saiz kotak gred Hasif. Boleh ubah nombor ni (cth: 800px atau 950px) kalau tak ngam */
+    margin: 20px auto 30px auto; /* Perkataan 'auto' akan tolak kotak ni betul-betul ke tengah skrin */
+    /* ------------------------------------------ */
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif !important;
+}
+/* Efek garisan "Glow" turquoise di bahagian atas kad */
+.student-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #5bc0be;
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start; /* Pastikan teks bermula dari atas jika nama panjang */
+}
+
+.info-label {
+    color: #94a3b8; 
+    font-size: 0.75rem; /* Kecilkan saiz label sedikit */
+    font-weight: 600;
+    letter-spacing: 0.5px; /* Kurangkan jarak antara huruf */
+    width: 85px; /* LEBAR DIPENDEKKAN: Jarak kini lebih rapat */
+    text-transform: uppercase;
+    flex-shrink: 0; 
+    padding-top: 3px; 
+}
+
+.info-value {
+    color: #ffffff;
+    font-size: 0.95rem; /* Kecilkan saiz nama sedikit supaya muat */
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    word-break: break-word; 
+    line-height: 1.3;
+    flex: 1; /* Tolak teks supaya mengambil semua ruang yang ada */
+}
+
+/* --- SUPAYA CANTIK BILA DICETAK KE PDF --- */
+@media print {
+    .student-info-card {
+        background: transparent !important;
+        border: 2px solid #000 !important;
+        box-shadow: none !important;
+        padding: 15px !important;
+    }
+    .student-info-card::before {
+        display: none !important;
+    }
+    .info-label {
+        color: #555 !important;
+    }
+    .info-value {
+        color: #000 !important;
+        font-weight: 700 !important;
+    }
+}
+
+/* --- GAYA DROPDOWN CARIAN TERAPUNG --- */
+.custom-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1e293b; /* Warna navy gelap Hasif */
+    border: 1px solid #5bc0be;
+    border-radius: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    margin-top: 5px;
+}
+
+.dropdown-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    color: #ffffff;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dropdown-item:hover {
+    background: #5bc0be;
+    color: #0b132b;
+}
+
+.dropdown-no-result {
+    padding: 15px;
+    color: #94a3b8;
+    text-align: center;
+    font-style: italic;
 }

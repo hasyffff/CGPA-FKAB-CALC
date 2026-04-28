@@ -20,6 +20,9 @@ auth.onAuthStateChanged((user) => {
             if (doc.exists) {
                 const data = doc.data();
                 
+                document.getElementById('display-nama').textContent = data.namaPenuh.toUpperCase();
+                document.getElementById('display-matrik').textContent = data.noMatrik;
+
                 // Tarik Gred
                 if (data.dataGred) savedGrades = data.dataGred;
                 
@@ -274,35 +277,39 @@ function createSemesterContent(semNum, subjects) {
     });
     
 // BAHAGIAN TAMBAH SUBJEK KE JADUAL (VERSI CUSTOM CANTIK)
-        html += `
-            </tbody>
-        </table>
+html += `
+    <div class="manual-item-controls" style="margin-top: 15px; background: rgba(91, 192, 190, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed #5bc0be; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
         
-        <div class="manual-item-controls" style="margin-top: 15px; background: rgba(91, 192, 190, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed #5bc0be; display: flex; gap: 10px; align-items: center;">
-            
-            <div style="flex: 1; position: relative;"> <input type="text" id="add-subject-input-${semNum}" 
-                       placeholder="🔍 Taip kod atau nama subjek (Cth: KEE1133)..." 
-                       autocomplete="off"
-                       onfocus="showCustomDropdown('${semNum}')" 
-                       oninput="filterCustomDropdown('${semNum}')" 
-                       style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #475569; background: #1e293b; color: white; box-sizing: border-box;">
-                
-                <div id="custom-dropdown-${semNum}" class="custom-select-dropdown"></div>
-            </div>
+<div style="flex: 2; min-width: 200px; position: relative; display: flex; align-items: center;">
+    <input type="text" id="add-subject-input-${semNum}" 
+           placeholder="🔍 Cari kod/nama subjek..." 
+           autocomplete="off"
+           onfocus="showCustomDropdown('${semNum}')" 
+           oninput="filterCustomDropdown('${semNum}')" 
+           style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: white;">
+    
+    <button type="button" id="clear-search-${semNum}" onclick="clearSearch('${semNum}')" 
+            style="position: absolute; right: 10px; background: none; border: none; color: #5bc0be; font-size: 1.5rem; cursor: pointer; display: none; line-height: 1;">
+        &times;
+    </button>
 
-            <button onclick="addSubjectToSyllabus('${semNum}')" style="background: #5bc0be; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; white-space: nowrap;">
-                + Masukkan Ke Jadual
-            </button>
+    <div id="custom-dropdown-${semNum}" class="custom-select-dropdown"></div>
+</div>
+
+        <div style="flex: 1; min-width: 120px;">
+            <select id="taraf-input-${semNum}" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #5bc0be; font-weight: bold;">
+                <option value="WF">WF</option>
+                <option value="WU">WU</option>
+                <option value="WP">WP</option>
+                <option value="EP">EP</option>
+            </select>
         </div>
-        
-        <div style="margin-top: 20px;">
-            <button onclick="addKOKU(${semNum})" class="btn-secondary" style="padding: 10px 20px;">
-                + Tambah Ko-Kurikulum
-            </button>
-        </div>
-        
-        <div id="koku-container-${semNum}"></div>
-    `;
+
+        <button onclick="addSubjectToSyllabus('${semNum}')" style="background: #5bc0be; color: #1a1a2e; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+            + Masukkan Ke Jadual
+        </button>
+    </div>
+`;
     
     return html;
 }
@@ -1087,58 +1094,47 @@ function removeDefaultSubject(semNum, subjectCode) {
 // ============================================
 function addSubjectToSyllabus(semNum) {
     const inputElem = document.getElementById(`add-subject-input-${semNum}`);
-    const fullText = inputElem.value;
+    const tarafElem = document.getElementById(`taraf-input-${semNum}`); // Tangkap ID taraf
     
-    // Ekstrak kod subjek (Cth: Dari "KEE1133 - Teknologi Elektrik" ambil "KEE1133" sahaja)
+    const fullText = inputElem.value;
     const subjectCode = fullText.split(' - ')[0].trim();
+    const selectedTaraf = tarafElem.value; // Ambil nilai WU/WF/WP/EP
     
     if (!subjectCode) {
-        alert("Sila taip dan pilih subjek daripada senarai terlebih dahulu.");
+        alert("Sila taip dan pilih subjek daripada senarai dropdown.");
         return;
     }
     
-    // 1. Cari butiran penuh subjek dari "database" asal
-    let newSubject = null;
-    for (const p in programmes) {
-        for (const s in programmes[p].semesters) {
-            const found = programmes[p].semesters[s].find(x => x.kod === subjectCode);
-            if (found) {
-                newSubject = { ...found }; // Salin data subjek
-                break;
-            }
-        }
-        if (newSubject) break;
-    }
+    const found = allEngineeringSubjects.find(x => x.kod === subjectCode);
     
-    if (newSubject) {
-        // 2. Semak supaya tiada subjek yang bertindih (double) dalam sem yang sama
+    if (found) {
+        // Gantikan taraf asal dengan taraf yang dipilih oleh user
+        let newSubject = { ...found, taraf: selectedTaraf }; 
+        
         const isExist = myPersonalSyllabus[semNum].some(sub => sub.kod === subjectCode);
         if (isExist) {
             alert("Subjek ini sudah ada dalam jadual semester ini.");
             return;
         }
         
-        // 3. Masukkan subjek ini ke dalam jadual peribadi pelajar
         myPersonalSyllabus[semNum].push(newSubject);
-        
-        // 4. LUKIS SEMULA SKRIN (Ini akan auto-update Jumlah Kredit!)
         initializeSemesters();
         showSemester(parseInt(semNum));
         
-        // 5. Kembalikan gred yang dah diisi & kira CGPA
         if (typeof updateUI === "function") updateUI();
         calculateAll(true);
         
-        // 6. Simpan jadual baharu ke Firebase
+        // Simpan ke Firebase
         const user = auth.currentUser;
         if (user) {
             db.collection("users").doc(user.uid).update({
                 silibusPeribadi: myPersonalSyllabus,
                 lastUpdated: new Date()
-            }).then(() => {
-                console.log("Subjek berjaya ditambah ke jadual awan.");
             });
         }
+        
+        // Kosongkan input selepas berjaya
+        inputElem.value = "";
     }
 }
 
@@ -1185,9 +1181,15 @@ function printReport() {
 function getSortedSubjectsArray() {
     let subjectsArray = [];
     let addedSubjects = new Set();
+
+    // 1. Pusing (Loop) setiap program yang ada (Elektronik & Elektrik)
     for (const progKey in programmes) {
-        for (const semKey in programmes[progKey].semesters) {
-            programmes[progKey].semesters[semKey].forEach(sub => {
+        const semesters = programmes[progKey].semesters;
+        
+        // 2. Masuk ke setiap semester dalam program tersebut
+        for (const semKey in semesters) {
+            semesters[semKey].forEach(sub => {
+                // 3. Elak duplicate: Hanya ambil jika kod subjek belum ada dalam senarai
                 if (!addedSubjects.has(sub.kod)) {
                     addedSubjects.add(sub.kod);
                     subjectsArray.push(sub);
@@ -1195,53 +1197,103 @@ function getSortedSubjectsArray() {
             });
         }
     }
+    
+    // 4. Susun senarai mengikut abjad Kod (A-Z) untuk kekemasan
     return subjectsArray.sort((a, b) => a.kod.localeCompare(b.kod));
 }
-
-// 2. Lukis isi dalam dropdown berdasarkan apa yang ditaip
+// ============================================
+// PAPARAN DROPDOWN CARIAN YANG KEMAS
+// ============================================
 function renderCustomDropdown(semNum, filterText = "") {
     const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
     if (!dropdown) return;
 
-    const subjects = getSortedSubjectsArray();
-    dropdown.innerHTML = ""; // Kosongkan dulu
-    
+    dropdown.innerHTML = ""; 
     const lowerFilter = filterText.toLowerCase();
     
-    // Tapis subjek (Boleh cari Kod atau Nama)
-    const filteredSubjects = subjects.filter(sub => 
+    // Tapis dari allEngineeringSubjects yang ada dalam data.js
+    const filteredSubjects = allEngineeringSubjects.filter(sub => 
         sub.kod.toLowerCase().includes(lowerFilter) || 
         sub.nama.toLowerCase().includes(lowerFilter)
     );
 
-    // Jika tak jumpa subjek
     if (filteredSubjects.length === 0) {
-        dropdown.innerHTML = `<div style="padding: 10px; color: #94a3b8; text-align: center; font-style: italic; font-size: 0.85em;">Tiada subjek dijumpai</div>`;
+        dropdown.innerHTML = `<div class="dropdown-no-result" style="padding:15px; color:#94a3b8; text-align:center;">Tiada subjek ditemui.</div>`;
         return;
     }
 
-    // Masukkan subjek yang melepasi tapisan ke dalam kotak
     filteredSubjects.forEach(sub => {
         const item = document.createElement('div');
         item.className = 'dropdown-item';
         item.textContent = `${sub.kod} - ${sub.nama}`;
         
-        // Bila pengguna klik subjek ini
         item.onclick = function() {
             document.getElementById(`add-subject-input-${semNum}`).value = this.textContent;
-            dropdown.style.display = 'none'; // Tutup dropdown
+            document.getElementById(`clear-search-${semNum}`).style.display = 'block';
+            dropdown.style.display = 'none'; 
+            
+            const officialTaraf = findOfficialTaraf(sub.kod);
+            if (officialTaraf) {
+                document.getElementById(`taraf-input-${semNum}`).value = officialTaraf;
+            }
         };
         dropdown.appendChild(item);
     });
 }
 
-// 3. Fungsi dipanggil bila pengguna mula menaip
-function filterCustomDropdown(semNum) {
-    const inputVal = document.getElementById(`add-subject-input-${semNum}`).value;
-    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
-    dropdown.style.display = 'block';
-    renderCustomDropdown(semNum, inputVal);
+// Fungsi helper untuk cari taraf rasmi
+function findOfficialTaraf(kod) {
+    for (let p in programmes) {
+        for (let s in programmes[p].semesters) {
+            const match = programmes[p].semesters[s].find(x => x.kod === kod);
+            if (match) return match.taraf;
+        }
+    }
+    return null;
 }
+
+// 3. Fungsi dipanggil bila pengguna mula menaip
+// MODIFIED: Fungsi untuk kawal paparan dropdown
+function filterCustomDropdown(semNum) {
+    const input = document.getElementById(`add-subject-input-${semNum}`);
+    const clearBtn = document.getElementById(`clear-search-${semNum}`);
+    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
+    
+    // Tunjuk/sorok butang pangkah
+    clearBtn.style.display = input.value.length > 0 ? 'block' : 'none';
+
+    if (input.value.trim() === "") {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    dropdown.style.display = 'block';
+    renderCustomDropdown(semNum, input.value);
+}
+
+// MODIFIED: Pastikan senarai keluar bila kotak diklik
+function showCustomDropdown(semNum) {
+    // Tutup dropdown lain
+    document.querySelectorAll('.custom-select-dropdown').forEach(el => el.style.display = 'none');
+    
+    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
+    const input = document.getElementById(`add-subject-input-${semNum}`);
+    const clearBtn = document.getElementById(`clear-search-${semNum}`);
+
+    // Tunjuk butang X jika sudah ada teks
+    if (clearBtn) clearBtn.style.display = input.value.length > 0 ? 'block' : 'none';
+
+    // PAKSA tunjuk dropdown walaupun kosong
+    dropdown.style.display = 'block';
+    renderCustomDropdown(semNum, input.value); 
+}
+
+// Tambah 'shortcut' Escape untuk tutup dropdown
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Escape") {
+        document.querySelectorAll('.custom-select-dropdown').forEach(el => el.style.display = 'none');
+    }
+});
 
 // 4. Fungsi dipanggil bila pengguna klik kotak input
 function showCustomDropdown(semNum) {
@@ -1261,3 +1313,18 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+
+// 1. Fungsi untuk padam teks carian
+function clearSearch(semNum) {
+    const input = document.getElementById(`add-subject-input-${semNum}`);
+    const clearBtn = document.getElementById(`clear-search-${semNum}`);
+    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
+    
+    input.value = ""; // Kosongkan teks
+    clearBtn.style.display = 'none'; // Sorok butang X
+    
+    // Tunjuk semula senarai penuh (sebab user nak cari subjek lain)
+    dropdown.style.display = 'block';
+    renderCustomDropdown(semNum, ""); 
+    input.focus();
+}

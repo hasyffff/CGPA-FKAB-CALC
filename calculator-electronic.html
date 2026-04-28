@@ -21,6 +21,17 @@
         <h2>Pilih Program Anda</h2>
     </div>
 
+    <div class="student-info-card">
+    <div class="info-row">
+        <span class="info-label">NAMA:</span>
+        <span class="info-value" id="display-nama">MEMUAT TURUN...</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">NO. MATRIK:</span>
+        <span class="info-value" id="display-matrik">-------</span>
+    </div>
+   </div>
+
     <div id="calculatorPage" class="container" style="display: block;">
         <h2 id="programTitle">Bachelor of Electronic Engineering with Honours</h2>
 
@@ -99,6 +110,7 @@
         loadScript("data.js");
         loadScript("script.js");
     </script>
+    <script>
         window.onload = function() {
             // Kita panggil fungsi selectProgram yang ada dalam script.js secara automatik
             if (typeof selectProgram === "function") {

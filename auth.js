@@ -95,6 +95,7 @@ if (registerForm) {
         // 1. INI PALING PENTING: Halang page dari ter-refresh awal!
         e.preventDefault(); 
 
+        const nama = document.getElementById('reg-nama').value;
         const id = document.getElementById('regId').value.trim();
         const personalEmail = document.getElementById('regEmail').value.trim();
         const program = document.getElementById('regProgram').value;
@@ -113,6 +114,7 @@ if (registerForm) {
             
             // 3. Mula simpan profil (Firestore) 
             return db.collection("users").doc(result.user.uid).set({
+                namaPenuh: nama,
                 noMatrik: id,
                 email: personalEmail, // <-- Laci e-mel dah ada!
                 kursus: program,
@@ -244,4 +246,18 @@ function initializeUserAcademicProfile(userUid, programType) {
             });
         }
     });
+}
+// ============================================
+// FUNGSI TUNJUK/SEMBUNYI KATA LALUAN
+// ============================================
+function togglePasswordVisibility(inputId, iconElement) {
+    const passwordInput = document.getElementById(inputId);
+    
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text"; // Tunjuk teks
+        iconElement.textContent = "🙈"; // Tukar ikon jadi monyet tutup mata (atau ikon palang)
+    } else {
+        passwordInput.type = "password"; // Sembunyi teks
+        iconElement.textContent = "👁️"; // Kembali ke ikon mata terbuka
+    }
 }
