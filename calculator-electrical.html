@@ -83,10 +83,20 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
-    <script src="auth.js?v=1.1"></script>
-    <script src="data.js?v=1.1"></script>
-    <script src="script.js?v=1.1"></script>
+<script>
+        // Fungsi untuk suntik fail JS dengan timestamp unik
+        function loadScript(src) {
+            const script = document.createElement('script');
+            // Date.now() akan bagi nombor unik (cth: 1714283456)
+            script.src = src + "?v=" + Date.now();
+            document.head.appendChild(script);
+        }
 
+        // Panggil fail-fail Hasif secara automatik
+        loadScript("auth.js");
+        loadScript("data.js");
+        loadScript("script.js");
+    </script>
     <script>
         window.onload = function() {
             // Kita panggil fungsi selectProgram yang ada dalam script.js secara automatik
