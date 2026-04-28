@@ -273,14 +273,23 @@ function createSemesterContent(semNum, subjects) {
         `;
     });
     
-    html += `
+// BAHAGIAN TAMBAH SUBJEK KE JADUAL (VERSI CUSTOM CANTIK)
+        html += `
             </tbody>
         </table>
         
-        <div style="margin-top: 15px; background: rgba(91, 192, 190, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed #5bc0be; display: flex; gap: 10px; align-items: center;">
-            <select id="add-subject-select-${semNum}" style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #475569; background: #1e293b; color: white;">
-                ${generateAllSubjectOptions()}
-            </select>
+        <div class="manual-item-controls" style="margin-top: 15px; background: rgba(91, 192, 190, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed #5bc0be; display: flex; gap: 10px; align-items: center;">
+            
+            <div style="flex: 1; position: relative;"> <input type="text" id="add-subject-input-${semNum}" 
+                       placeholder="🔍 Taip kod atau nama subjek (Cth: KEE1133)..." 
+                       autocomplete="off"
+                       onfocus="showCustomDropdown('${semNum}')" 
+                       oninput="filterCustomDropdown('${semNum}')" 
+                       style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #475569; background: #1e293b; color: white; box-sizing: border-box;">
+                
+                <div id="custom-dropdown-${semNum}" class="custom-select-dropdown"></div>
+            </div>
+
             <button onclick="addSubjectToSyllabus('${semNum}')" style="background: #5bc0be; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; white-space: nowrap;">
                 + Masukkan Ke Jadual
             </button>
@@ -464,15 +473,38 @@ function loadSavedData() {
 }
 
 
+// ============================================
+// RESET SEMUA (FACTORY RESET SEBENAR)
+// ============================================
 function clearAll() {
-    if (confirm('Anda pasti mahu reset semua data? Tindakan ini tidak boleh dibatalkan.')) {
+    if (confirm('Anda pasti mahu reset semua data? Tindakan ini akan memadam data di peranti dan di awan (Firebase).')) {
+        
+        // 1. Cuci memori tempatan (PC/Phone)
         savedGrades = {};
         localStorage.removeItem('cgpa-calculator-data');
+        
+        // 2. Cuci memori awan (Firebase)
+        const user = auth.currentUser;
+        if (user) {
+            db.collection("users").doc(user.uid).update({
+                dataGred: {}, // Kosongkan semua gred
+                silibusPeribadi: firebase.firestore.FieldValue.delete() // Buang silibus custom (kembali ke asal)
+            }).then(() => {
+                console.log("Firebase berjaya dicuci bersih.");
+            }).catch(error => {
+                console.error("Ralat mencuci Firebase:", error);
+            });
+        }
+        
+        // 3. Reset UI ke tetapan kilang
+        myPersonalSyllabus = programmes[currentProgram].semesters; 
         initializeSemesters();
         showSemester(1);
+        
         document.getElementById('currentGPA').textContent = '-';
         document.getElementById('overallCGPA').textContent = '-';
-        alert('✓ Semua data telah direset.');
+        
+        alert('✓ Semua data telah direset. Sistem anda kini bersih seperti baru.');
     }
 }
 
@@ -969,30 +1001,34 @@ function addManualRow(semNum) {
     }
 }
 
-// ============================================
-// HIMPUNKAN SEMUA SUBJEK FKAB UNTUK DROPDOWN
+/// ============================================
+// HIMPUNKAN & SUSUN SUBJEK UNTUK DATALIST (SEARCHABLE)
 // ============================================
 function generateAllSubjectOptions() {
-    let optionsHtml = '<option value="">-- Sila Pilih Subjek --</option>';
-    let addedSubjects = new Set(); // Set digunakan supaya kod subjek tak berulang
+    let subjectsArray = [];
+    let addedSubjects = new Set();
 
-    // Loop semua program (Elektronik & Elektrik)
+    // Kumpul semua subjek ke dalam satu tatasusunan (array)
     for (const progKey in programmes) {
-        const prog = programmes[progKey];
-        // Loop semua semester
-        for (const semKey in prog.semesters) {
-            prog.semesters[semKey].forEach(sub => {
-                // Jika subjek belum ada dalam senarai, kita tambah
+        for (const semKey in programmes[progKey].semesters) {
+            programmes[progKey].semesters[semKey].forEach(sub => {
                 if (!addedSubjects.has(sub.kod)) {
                     addedSubjects.add(sub.kod);
-                    // Kita simpan 'kredit' dalam data-attribute supaya senang nak auto-fill nanti
-                    optionsHtml += `<option value="${sub.kod}" data-credit="${sub.kredit}">
-                        ${sub.kod} - ${sub.nama} (${sub.kredit} Kredit)
-                    </option>`;
+                    subjectsArray.push(sub);
                 }
             });
         }
     }
+
+    // Susun array tersebut mengikut Kod Subjek (A-Z)
+    subjectsArray.sort((a, b) => a.kod.localeCompare(b.kod));
+
+    let optionsHtml = '';
+    // Hasilkan senarai <option> untuk Datalist
+    subjectsArray.forEach(sub => {
+        optionsHtml += `<option value="${sub.kod} - ${sub.nama}"></option>`;
+    });
+    
     return optionsHtml;
 }
 
@@ -1050,11 +1086,14 @@ function removeDefaultSubject(semNum, subjectCode) {
 // SUNTIK SUBJEK BAHARU TERUS KE DALAM JADUAL
 // ============================================
 function addSubjectToSyllabus(semNum) {
-    const selectElem = document.getElementById(`add-subject-select-${semNum}`);
-    const subjectCode = selectElem.value;
+    const inputElem = document.getElementById(`add-subject-input-${semNum}`);
+    const fullText = inputElem.value;
+    
+    // Ekstrak kod subjek (Cth: Dari "KEE1133 - Teknologi Elektrik" ambil "KEE1133" sahaja)
+    const subjectCode = fullText.split(' - ')[0].trim();
     
     if (!subjectCode) {
-        alert("Sila pilih subjek daripada senarai terlebih dahulu.");
+        alert("Sila taip dan pilih subjek daripada senarai terlebih dahulu.");
         return;
     }
     
@@ -1102,3 +1141,123 @@ function addSubjectToSyllabus(semNum) {
         }
     }
 }
+
+// ============================================
+// FUNGSI CETAK SLIP KEPUTUSAN (PDF) - VERSI BAIKI
+// ============================================
+function printReport() {
+    calculateAll(true);
+    
+    // 1. Cari semua kotak pilihan (dropdown) di dalam jadual
+    const allSelects = document.querySelectorAll('table select');
+    
+    allSelects.forEach(select => {
+        // 2. Cipta teks biasa untuk menggantikan kotak dropdown semasa print
+        const span = document.createElement('span');
+        span.className = 'print-gred-text';
+        
+        // Semak jika pengguna ada pilih gred
+        if(select.selectedIndex >= 0 && select.value !== "") {
+            span.textContent = select.options[select.selectedIndex].text;
+        } else {
+            span.textContent = "-";
+        }
+        
+        // Sembunyikan di skrin biasa, hanya tunjuk masa print
+        span.style.display = 'none'; 
+        
+        // 3. Letak teks ini bersebelahan kotak dropdown
+        select.parentNode.insertBefore(span, select.nextSibling);
+    });
+    
+    // 4. Panggil arahan cetak sistem
+    window.print();
+    
+    // 5. Bersihkan semula teks tambahan tadi selepas dialog print ditutup
+    document.querySelectorAll('.print-gred-text').forEach(el => el.remove());
+}
+
+// ============================================
+// ENJIN CUSTOM SEARCHABLE DROPDOWN
+// ============================================
+
+// 1. Dapatkan senarai subjek tersusun (A-Z)
+function getSortedSubjectsArray() {
+    let subjectsArray = [];
+    let addedSubjects = new Set();
+    for (const progKey in programmes) {
+        for (const semKey in programmes[progKey].semesters) {
+            programmes[progKey].semesters[semKey].forEach(sub => {
+                if (!addedSubjects.has(sub.kod)) {
+                    addedSubjects.add(sub.kod);
+                    subjectsArray.push(sub);
+                }
+            });
+        }
+    }
+    return subjectsArray.sort((a, b) => a.kod.localeCompare(b.kod));
+}
+
+// 2. Lukis isi dalam dropdown berdasarkan apa yang ditaip
+function renderCustomDropdown(semNum, filterText = "") {
+    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
+    if (!dropdown) return;
+
+    const subjects = getSortedSubjectsArray();
+    dropdown.innerHTML = ""; // Kosongkan dulu
+    
+    const lowerFilter = filterText.toLowerCase();
+    
+    // Tapis subjek (Boleh cari Kod atau Nama)
+    const filteredSubjects = subjects.filter(sub => 
+        sub.kod.toLowerCase().includes(lowerFilter) || 
+        sub.nama.toLowerCase().includes(lowerFilter)
+    );
+
+    // Jika tak jumpa subjek
+    if (filteredSubjects.length === 0) {
+        dropdown.innerHTML = `<div style="padding: 10px; color: #94a3b8; text-align: center; font-style: italic; font-size: 0.85em;">Tiada subjek dijumpai</div>`;
+        return;
+    }
+
+    // Masukkan subjek yang melepasi tapisan ke dalam kotak
+    filteredSubjects.forEach(sub => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.textContent = `${sub.kod} - ${sub.nama}`;
+        
+        // Bila pengguna klik subjek ini
+        item.onclick = function() {
+            document.getElementById(`add-subject-input-${semNum}`).value = this.textContent;
+            dropdown.style.display = 'none'; // Tutup dropdown
+        };
+        dropdown.appendChild(item);
+    });
+}
+
+// 3. Fungsi dipanggil bila pengguna mula menaip
+function filterCustomDropdown(semNum) {
+    const inputVal = document.getElementById(`add-subject-input-${semNum}`).value;
+    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
+    dropdown.style.display = 'block';
+    renderCustomDropdown(semNum, inputVal);
+}
+
+// 4. Fungsi dipanggil bila pengguna klik kotak input
+function showCustomDropdown(semNum) {
+    // Tutup mana-mana dropdown semester lain yang mungkin terbuka
+    document.querySelectorAll('.custom-select-dropdown').forEach(el => el.style.display = 'none');
+    
+    const dropdown = document.getElementById(`custom-dropdown-${semNum}`);
+    dropdown.style.display = 'block';
+    filterCustomDropdown(semNum); // Tunjuk senarai penuh dulu
+}
+
+// 5. Tutup dropdown bila pengguna klik merata tempat kat skrin (Luar kawasan)
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.manual-item-controls')) {
+        document.querySelectorAll('.custom-select-dropdown').forEach(el => {
+            el.style.display = 'none';
+        });
+    }
+});

@@ -1035,3 +1035,117 @@ button.btn-google:hover {
         width: 100%;
     }
 }
+
+/* ============================================ */
+/* CSS UNTUK CETAKAN PDF (PRINT MEDIA QUERY)    */
+/* ============================================ */
+@media print {
+    /* 1. Sembunyikan elemen yang menyemakkan PDF */
+    .action-buttons, 
+    .prediction-section, 
+    .btn-print, 
+    .semester-selector,
+    /* Tunjukkan teks gred biasa masa cetakan sahaja */
+    .print-gred-text {
+        display: inline-block !important;
+        font-weight: bold;
+        color: black !important;
+    }
+    .top-right-nav,
+    footer,
+    button,
+    select {
+        display: none !important;
+    }
+
+    /* 2. Format Kertas & Warna (Jimat Dakwat) */
+    body {
+        background-color: white !important;
+        color: black !important;
+        font-family: 'Times New Roman', serif;
+    }
+
+    .container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* 3. Cantikkan Jadual */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        border: 1px solid #000 !important;
+        padding: 8px;
+        text-align: left;
+        color: black !important;
+    }
+
+    /* 4. Tajuk Rasmi Pada Dokumen */
+    body::before {
+        content: "SLIP KEPUTUSAN PEPERIKSAAN ";
+        display: block;
+        text-align: center;
+        font-size: 16pt;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-decoration: underline;
+    }
+}
+
+/* ============================================ */
+/* CUSTOM SEARCHABLE DROPDOWN                   */
+/* ============================================ */
+.custom-select-dropdown {
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    right: 0; 
+    background: #1e293b; 
+    border: 1px solid #5bc0be; /* Warna border tema kita */
+    border-top: none; 
+    border-radius: 0 0 8px 8px; 
+    max-height: 220px; 
+    overflow-y: auto; 
+    z-index: 1000; 
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+}
+
+.custom-select-dropdown .dropdown-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    color: #e2e8f0;
+    border-bottom: 1px solid #334155;
+    font-size: 0.85em;
+    transition: background 0.2s ease;
+}
+
+.custom-select-dropdown .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.custom-select-dropdown .dropdown-item:hover {
+    background-color: #5bc0be; /* Warna turquoise bila mouse lalu */
+    color: #1a1a2e; /* Teks jadi gelap bila di-highlight */
+    font-weight: bold;
+}
+
+/* Custom Scrollbar untuk Dropdown supaya tak nampak kelabu biasa */
+.custom-select-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-select-dropdown::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 0 0 8px 0;
+}
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+    background: #5bc0be;
+    border-radius: 4px;
+}
