@@ -16,7 +16,8 @@ const gradePoints = {
     'C-': 1.75,
     'D': 1.00,
     'F': 0.00,
-    '': 0.00
+    "L": null,  // Lulus (Tidak dikira dalam GPA/CGPA)
+    "K": null   // Kandas (Sama seperti L, tidak dikira)
 };
 
 // KO-KURIKULUM (KOKU) – SAMPLE, BOLEH GANTI NANTI
@@ -75,6 +76,7 @@ const electronicEngineering = {
             { kod: "BAA1022", nama: "Bahasa Arab Praktikal", kredit: 2, taraf: "WF", optional: false },
             { kod: "BIA1012", nama: "Kemahiran Am Bahasa Inggeris", kredit: 2, taraf: "WF", optional: false },
             { kod: "UTC1012", nama: "Penghayatan Etika dan Peradaban", kredit: 2, taraf: "WU", optional: false },
+            { kod: "UTT3012", nama: "INTRODUCTION TO TURATH BOOKS", kredit: 2, taraf: "WF", optional: false },
             { kod: "KEE1133", nama: "Teknologi Elektrik", kredit: 3, taraf: "WF", optional: false },
             { kod: "KEH1123", nama: "Matematik Kejuruteraan I", kredit: 3, taraf: "WF", optional: false },
             { kod: "KEK1113", nama: "Pengaturcaraan untuk Kejuruteraan", kredit: 3, taraf: "WF", optional: false }

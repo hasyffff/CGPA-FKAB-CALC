@@ -216,3 +216,32 @@ function forgotPassword() {
         }
     });
 }
+
+// Tambah fungsi ini di bahagian bawah fail
+function initializeUserAcademicProfile(userUid, programType) {
+    const userRef = db.collection("users").doc(userUid);
+    
+    userRef.get().then((doc) => {
+        // Jika akaun baru ATAU belum ada data 'silibusPeribadi'
+        if (!doc.exists || !doc.data().silibusPeribadi) {
+            console.log("Mencipta silibus peribadi pertama kali...");
+            
+            // Ambil salinan asal dari data.js
+            const originalProgramData = programmes[programType].semesters;
+            
+            // Simpan ke Firestore
+            userRef.set({
+                program: programType,
+                silibusPeribadi: originalProgramData,
+                dataGred: {} // Kosongkan gred dulu
+            }, { merge: true }) // merge: true penting supaya data login tak hilang
+            .then(() => {
+                console.log("Silibus peribadi berjaya dicipta!");
+                // Panggil semula fungsi paparan UI
+                if (typeof loadSilibusPeribadi === 'function') {
+                    loadSilibusPeribadi();
+                }
+            });
+        }
+    });
+}

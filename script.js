@@ -4,34 +4,47 @@ const urlParams = new URLSearchParams(window.location.search);
 const mode = urlParams.get('mode');
 const studentId = urlParams.get('id');
 
+let myPersonalSyllabus = {}; // Ini akan pegang struktur subjek pelajar
+
 // 1. Biarkan ID Matrik dipapar jika ada (Jangan usik)
 if (mode === 'login' && studentId) {
     document.body.insertAdjacentHTML('afterbegin', `<div style="text-align:center; padding:10px; background:#1a1a2e; color:white;">No. Matrik: ${studentId}</div>`);
 }
 
 // 2. PINDAHKAN INI KE LUAR (Supaya dia sentiasa "mendengar" Firebase)
+// Gantikan bahagian auth.onAuthStateChanged sedia ada dengan ini:
 auth.onAuthStateChanged((user) => {
     if (user) {
         console.log("🔍 Firebase mengesan user:", user.email);
         db.collection("users").doc(user.uid).get().then((doc) => {
-            if (doc.exists && doc.data().dataGred) {
-                savedGrades = doc.data().dataGred;
-                console.log("✅ Data gred ditarik dari Firebase");
-                if (currentProgram) updateUI();
+            if (doc.exists) {
+                const data = doc.data();
+                
+                // Tarik Gred
+                if (data.dataGred) savedGrades = data.dataGred;
+                
+                // Tarik Silibus Peribadi (Ini yang baharu!)
+                if (data.silibusPeribadi) {
+                    myPersonalSyllabus = data.silibusPeribadi;
+                } else if (currentProgram) {
+                    // Jika tiada (fallback), ambil dari data.js
+                    myPersonalSyllabus = programmes[currentProgram].semesters;
+                }
+                
+                if (currentProgram) {
+                    initializeSemesters(); // Lukis semula jadual dengan data awan!
+                    showSemester(currentSemester || 1); 
+                    updateUI(); // Masukkan gred ke dalam kotak
+                }
             }
         });
     } else {
-       // --- UBAH DI SINI UNTUK GUEST MODE ---
-        console.log("👤 Mod Tetamu Dikesan. Cari data sementara (sessionStorage)...");
-        
-        // Tukar localStorage kepada sessionStorage
+        // Logik Guest Mode kekal sama
         const guestData = sessionStorage.getItem('cgpa_guest');
-        
-        if (guestData) {
-            savedGrades = JSON.parse(guestData);
-            if (currentProgram) updateUI();
-        } else {
-            savedGrades = {}; 
+        if (guestData) savedGrades = JSON.parse(guestData);
+        if (currentProgram) {
+            myPersonalSyllabus = programmes[currentProgram].semesters; // Guest guna default
+            initializeSemesters();
         }
     }
 });
@@ -115,6 +128,9 @@ function selectProgram(programType) {
       titleElem.textContent = program.fullName;
   }
 
+  if (Object.keys(myPersonalSyllabus).length === 0) {
+        myPersonalSyllabus = program.semesters;
+    }
   // 1. Tarik data & Bina jadual dahulu
   //loadSavedData();
   
@@ -181,14 +197,13 @@ function startGuestCalculator() {
 // SEMESTER MANAGEMENT
 // ============================================
 function initializeSemesters() {
-    const program = programmes[currentProgram];
     const tabsContainer = document.getElementById('semesterTabs');
     const contentContainer = document.getElementById('semesterContent');
     
     tabsContainer.innerHTML = '';
     contentContainer.innerHTML = '';
     
-    Object.keys(program.semesters).forEach(semNum => {
+    Object.keys(myPersonalSyllabus).forEach(semNum => {
         const tab = document.createElement('button');
         tab.className = 'tab';
         
@@ -201,7 +216,7 @@ function initializeSemesters() {
         const semesterDiv = document.createElement('div');
         semesterDiv.className = 'semester-data';
         semesterDiv.id = `semester-${semNum}`;
-        semesterDiv.innerHTML = createSemesterContent(semNum, program.semesters[semNum]);
+        semesterDiv.innerHTML = createSemesterContent(semNum, myPersonalSyllabus[semNum]);
         contentContainer.appendChild(semesterDiv);
     });
 }
@@ -224,7 +239,7 @@ function createSemesterContent(semNum, subjects) {
                     <th style="width: 8%">Kredit</th>
                     <th style="width: 8%">Taraf</th>
                     <th style="width: 20%">Gred</th>
-                    <th style="width: 12%">Ambil?</th>
+                    <th style="width: 12%">Tindakan</th>
                 </tr>
             </thead>
             <tbody>
@@ -250,12 +265,9 @@ function createSemesterContent(semNum, subjects) {
                     </select>
                 </td>
                 <td style="text-align: center;">
-                    ${isOptional ? `
-                        <input type="checkbox" 
-                               id="taken-${subjectId}" 
-                               onchange="toggleSubject('${subjectId}')"
-                               ${isTaken ? 'checked' : ''}>
-                    ` : '✓'}
+                    <button onclick="removeDefaultSubject('${semNum}', '${subject.kod}')" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; font-weight: 600;">
+                        Hapus
+                    </button>
                 </td>
             </tr>
         `;
@@ -264,6 +276,15 @@ function createSemesterContent(semNum, subjects) {
     html += `
             </tbody>
         </table>
+        
+        <div style="margin-top: 15px; background: rgba(91, 192, 190, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed #5bc0be; display: flex; gap: 10px; align-items: center;">
+            <select id="add-subject-select-${semNum}" style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #475569; background: #1e293b; color: white;">
+                ${generateAllSubjectOptions()}
+            </select>
+            <button onclick="addSubjectToSyllabus('${semNum}')" style="background: #5bc0be; color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; white-space: nowrap;">
+                + Masukkan Ke Jadual
+            </button>
+        </div>
         
         <div style="margin-top: 20px;">
             <button onclick="addKOKU(${semNum})" class="btn-secondary" style="padding: 10px 20px;">
@@ -480,6 +501,21 @@ function calculateAll(isSenyap = false) {
                 semCredits += subject.kredit;
             }
         });
+
+        // Di dalam loop semester dalam fungsi calculateAll
+        const manualCont = document.getElementById(`manual-container-${semNum}`);
+        if (manualCont) {
+            manualCont.querySelectorAll('.manual-item').forEach(item => {
+                const credit = parseFloat(item.querySelector('.manual-credit').value) || 0;
+                const grade = item.querySelector('.manual-grade').value;
+                
+                // Logik USIM: Jika gred bukan L, baru kira dalam CGPA
+                if (grade && grade !== "L" && credit > 0) {
+                    semGradePoints += (gradePoints[grade] * credit);
+                    semCredits += credit;
+                }
+            });
+        }
         
         const kokuContainer = document.getElementById(`koku-container-${semNum}`);
         if (kokuContainer) {
@@ -879,5 +915,190 @@ function showSemester(semNum) {
     // Arahkan sistem kemaskini kotak GPA dan CGPA di bawah secara senyap
     if (typeof calculateAll === "function") {
         calculateAll(true); 
+    }
+}
+
+// ============================================
+// TAMBAH SUBJEK MANUAL (REPEAT/ELECTIVE)
+// ============================================
+// ============================================
+// TAMBAH SUBJEK MANUAL (VERSI SMART DROPDOWN)
+// ============================================
+let manualCount = 0;
+function addManualRow(semNum) {
+    manualCount++;
+    const container = document.getElementById(`manual-container-${semNum}`);
+    const rowId = `manual-${semNum}-${manualCount}`;
+
+    // Panggil senarai semua subjek
+    const subjectOptions = generateAllSubjectOptions();
+
+    const html = `
+        <div class="manual-item" id="${rowId}" style="background: rgba(91, 192, 190, 0.1); padding: 15px; margin-top: 10px; border-radius: 8px; border-left: 4px solid #5bc0be;">
+            <div style="display: grid; grid-template-columns: 2.5fr 0.8fr 1fr auto; gap: 10px; align-items: end;">
+                
+                <div>
+                    <label style="font-size: 0.8em; color: #5bc0be; font-weight: bold;">Pilih Subjek FKAB:</label>
+                    <select class="manual-kod-select" onchange="autoFillManualSubject('${rowId}')" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: white; color: black;">
+                        ${subjectOptions}
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.8em; color: #5bc0be; font-weight: bold;">Kredit:</label>
+                    <input type="number" class="manual-credit" value="0" min="1" readonly style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: #e9ecef; color: #495057;">
+                </div>
+
+                <div>
+                    <label style="font-size: 0.8em; color: #5bc0be; font-weight: bold;">Gred:</label>
+                    <select class="manual-grade" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: white; color: black;">
+                        <option value="">- Pilih -</option>
+                        ${createGradeOptions('')}
+                        <option value="L">L (Lulus)</option>
+                    </select>
+                </div>
+
+                <button onclick="document.getElementById('${rowId}').remove(); calculateAll(true);" style="background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Hapus
+                </button>
+            </div>
+        </div>
+    `;
+    if (container) {
+        container.insertAdjacentHTML('beforeend', html);
+    }
+}
+
+// ============================================
+// HIMPUNKAN SEMUA SUBJEK FKAB UNTUK DROPDOWN
+// ============================================
+function generateAllSubjectOptions() {
+    let optionsHtml = '<option value="">-- Sila Pilih Subjek --</option>';
+    let addedSubjects = new Set(); // Set digunakan supaya kod subjek tak berulang
+
+    // Loop semua program (Elektronik & Elektrik)
+    for (const progKey in programmes) {
+        const prog = programmes[progKey];
+        // Loop semua semester
+        for (const semKey in prog.semesters) {
+            prog.semesters[semKey].forEach(sub => {
+                // Jika subjek belum ada dalam senarai, kita tambah
+                if (!addedSubjects.has(sub.kod)) {
+                    addedSubjects.add(sub.kod);
+                    // Kita simpan 'kredit' dalam data-attribute supaya senang nak auto-fill nanti
+                    optionsHtml += `<option value="${sub.kod}" data-credit="${sub.kredit}">
+                        ${sub.kod} - ${sub.nama} (${sub.kredit} Kredit)
+                    </option>`;
+                }
+            });
+        }
+    }
+    return optionsHtml;
+}
+
+// Fungsi Auto-Isi (Bila pengguna pilih subjek, jam kredit bertukar automatik)
+function autoFillManualSubject(rowId) {
+    const row = document.getElementById(rowId);
+    if (!row) return;
+
+    const selectElem = row.querySelector('.manual-kod-select');
+    const creditInput = row.querySelector('.manual-credit');
+
+    const selectedOption = selectElem.options[selectElem.selectedIndex];
+    
+    if (selectedOption.value !== "") {
+        // Tarik nilai kredit dari option yang dipilih
+        creditInput.value = selectedOption.getAttribute('data-credit');
+    } else {
+        creditInput.value = "0";
+    }
+}
+
+// ============================================
+// HAPUS SUBJEK ASAL (JADIKAN SILIBUS FLEKSIBEL)
+// ============================================
+function removeDefaultSubject(semNum, subjectCode) {
+    if (confirm(`Anda pasti mahu menghapus subjek ${subjectCode} dari semester ini?`)) {
+        
+        // 1. Tapis dan buang subjek yang dipilih daripada memori
+        myPersonalSyllabus[semNum] = myPersonalSyllabus[semNum].filter(sub => sub.kod !== subjectCode);
+
+        // 2. Lukis semula jadual supaya ia hilang dari skrin
+        initializeSemesters();
+        showSemester(parseInt(semNum));
+        
+        // 3. Masukkan semula gred-gred lain yang telah diisi & kira semula CGPA
+        if (typeof updateUI === "function") updateUI();
+        calculateAll(true);
+
+        // 4. Simpan struktur baharu ini ke Firebase supaya tak hilang bila refresh
+        const user = auth.currentUser;
+        if (user) {
+            db.collection("users").doc(user.uid).update({
+                silibusPeribadi: myPersonalSyllabus,
+                lastUpdated: new Date()
+            }).then(() => {
+                console.log("Subjek berjaya dihapuskan dari silibus peribadi awan.");
+            }).catch(err => {
+                console.error("Ralat padam subjek:", err);
+            });
+        }
+    }
+}
+
+// ============================================
+// SUNTIK SUBJEK BAHARU TERUS KE DALAM JADUAL
+// ============================================
+function addSubjectToSyllabus(semNum) {
+    const selectElem = document.getElementById(`add-subject-select-${semNum}`);
+    const subjectCode = selectElem.value;
+    
+    if (!subjectCode) {
+        alert("Sila pilih subjek daripada senarai terlebih dahulu.");
+        return;
+    }
+    
+    // 1. Cari butiran penuh subjek dari "database" asal
+    let newSubject = null;
+    for (const p in programmes) {
+        for (const s in programmes[p].semesters) {
+            const found = programmes[p].semesters[s].find(x => x.kod === subjectCode);
+            if (found) {
+                newSubject = { ...found }; // Salin data subjek
+                break;
+            }
+        }
+        if (newSubject) break;
+    }
+    
+    if (newSubject) {
+        // 2. Semak supaya tiada subjek yang bertindih (double) dalam sem yang sama
+        const isExist = myPersonalSyllabus[semNum].some(sub => sub.kod === subjectCode);
+        if (isExist) {
+            alert("Subjek ini sudah ada dalam jadual semester ini.");
+            return;
+        }
+        
+        // 3. Masukkan subjek ini ke dalam jadual peribadi pelajar
+        myPersonalSyllabus[semNum].push(newSubject);
+        
+        // 4. LUKIS SEMULA SKRIN (Ini akan auto-update Jumlah Kredit!)
+        initializeSemesters();
+        showSemester(parseInt(semNum));
+        
+        // 5. Kembalikan gred yang dah diisi & kira CGPA
+        if (typeof updateUI === "function") updateUI();
+        calculateAll(true);
+        
+        // 6. Simpan jadual baharu ke Firebase
+        const user = auth.currentUser;
+        if (user) {
+            db.collection("users").doc(user.uid).update({
+                silibusPeribadi: myPersonalSyllabus,
+                lastUpdated: new Date()
+            }).then(() => {
+                console.log("Subjek berjaya ditambah ke jadual awan.");
+            });
+        }
     }
 }
