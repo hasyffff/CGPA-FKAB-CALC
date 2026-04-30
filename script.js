@@ -12,42 +12,52 @@ if (mode === 'login' && studentId) {
 }
 
 // 2. PINDAHKAN INI KE LUAR (Supaya dia sentiasa "mendengar" Firebase)
-// Gantikan bahagian auth.onAuthStateChanged sedia ada dengan ini:
 auth.onAuthStateChanged((user) => {
+    // Ambil elemen kad maklumat pelajar
+    const infoCard = document.querySelector('.student-info-card');
+
     if (user) {
         console.log("🔍 Firebase mengesan user:", user.email);
+        
+        // --- LOGIK USER LOGIN ---
+        if (infoCard) infoCard.style.display = 'block'; // Tunjukkan kad jika user login
+
         db.collection("users").doc(user.uid).get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                
                 document.getElementById('display-nama').textContent = data.namaPenuh.toUpperCase();
                 document.getElementById('display-matrik').textContent = data.noMatrik;
 
-                // Tarik Gred
                 if (data.dataGred) savedGrades = data.dataGred;
-                
-                // Tarik Silibus Peribadi (Ini yang baharu!)
                 if (data.silibusPeribadi) {
                     myPersonalSyllabus = data.silibusPeribadi;
                 } else if (currentProgram) {
-                    // Jika tiada (fallback), ambil dari data.js
                     myPersonalSyllabus = programmes[currentProgram].semesters;
                 }
                 
                 if (currentProgram) {
-                    initializeSemesters(); // Lukis semula jadual dengan data awan!
+                    initializeSemesters();
                     showSemester(currentSemester || 1); 
-                    updateUI(); // Masukkan gred ke dalam kotak
+                    updateUI();
                 }
             }
         });
     } else {
-        // Logik Guest Mode kekal sama
+        // --- LOGIK GUEST MODE ---
+        console.log("👤 Mod Tetamu (Guest) dikesan.");
+        
+        // SOROKKAN KAD MAKLUMAT TERUS!
+        if (infoCard) {
+            infoCard.style.display = 'none'; 
+        }
+
         const guestData = sessionStorage.getItem('cgpa_guest');
         if (guestData) savedGrades = JSON.parse(guestData);
+        
         if (currentProgram) {
-            myPersonalSyllabus = programmes[currentProgram].semesters; // Guest guna default
+            myPersonalSyllabus = programmes[currentProgram].semesters;
             initializeSemesters();
+            showSemester(1);
         }
     }
 });
@@ -87,20 +97,41 @@ let currentProgram = null;
 let currentSemester = 1;
 let savedGrades = {};
 
-/// bezakan user akaun vs guest
-const currentUser   = localStorage.getItem('currentUser');
-const storedProgram = localStorage.getItem('currentProgram');
+// ============================================
+// PENGESANAN USER & GUEST AUTOMATIK (FIXED)
+// ============================================
 
-if (currentUser && storedProgram) {
-  // USER AKAUN → terus guna course dari akaun
-  selectProgram(storedProgram);
-  const backBtn = document.querySelector('.back-btn');
-  if (backBtn) backBtn.style.display = 'none';
-} else {
-  // GUEST → jangan auto select apa‑apa
-  document.getElementById('programSelection').style.display = 'block';
-  document.getElementById('calculatorPage').style.display = 'none';
+function autoDetectAndLoad() {
+    const currentUser = localStorage.getItem('currentUser');
+    const storedProgram = localStorage.getItem('currentProgram');
+    const currentPath = window.location.pathname.toLowerCase();
+
+    if (currentUser && storedProgram) {
+        // JIKA LOGIN: Terus guna program dari akaun
+        selectProgram(storedProgram);
+        const backBtn = document.querySelector('.back-btn');
+        if (backBtn) backBtn.style.display = 'none';
+    } else {
+        // JIKA GUEST: Kesan program terus melalui nama fail HTML
+        if (currentPath.includes('electronic')) {
+            selectProgram('Electronic'); // Auto-buka kalkulator Elektronik
+        } else if (currentPath.includes('electrical')) {
+            selectProgram('Electrical'); // Auto-buka kalkulator Elektrikal
+        } else {
+            // Hanya papar kotak pilihan jika berada di page utama (calculator.html)
+            const progSel = document.getElementById('programSelection');
+            const calcPage = document.getElementById('calculatorPage');
+            if (progSel) progSel.style.display = 'block';
+            if (calcPage) calcPage.style.display = 'none';
+        }
+    }
 }
+
+// Jalankan enjin pengesanan sebaik sahaja fail JS dibaca
+autoDetectAndLoad();
+
+// Jalankan sekali lagi selepas HTML siap dilukis (Safety Backup)
+window.addEventListener('DOMContentLoaded', autoDetectAndLoad);
 
 // AUTO-LOAD PROGRAM SEBAIK PAGE DIBUKA
 window.addEventListener('DOMContentLoaded', () => {
@@ -285,6 +316,7 @@ html += `
            placeholder="🔍 Cari kod/nama subjek..." 
            autocomplete="off"
            onfocus="showCustomDropdown('${semNum}')" 
+           onclick="showCustomDropdown('${semNum}')" /* TAMBAHAN: Paksa keluar bila diklik walau dah aktif */
            oninput="filterCustomDropdown('${semNum}')" 
            style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: white;">
     

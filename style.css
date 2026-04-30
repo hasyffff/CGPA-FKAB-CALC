@@ -1120,39 +1120,40 @@ button.btn-google:hover {
 /* ============================================ */
 /* CUSTOM SEARCHABLE DROPDOWN                   */
 /* ============================================ */
+/* --- GAYA DROPDOWN CARIAN TERAPUNG --- */
 .custom-select-dropdown {
-    display: none; 
-    position: absolute; 
-    top: 100%; 
-    left: 0; 
-    right: 0; 
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     background: #1e293b; 
-    border: 1px solid #5bc0be; /* Warna border tema kita */
-    border-top: none; 
-    border-radius: 0 0 8px 8px; 
-    max-height: 220px; 
+    border: 1px solid #5bc0be;
+    border-radius: 8px;
+    
+    /* INI 2 BARIS PALING PENTING UNTUK SCROLL */
+    max-height: 250px; 
     overflow-y: auto; 
-    z-index: 1000; 
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+    
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    margin-top: 5px;
 }
 
-.custom-select-dropdown .dropdown-item {
-    padding: 12px 15px;
-    cursor: pointer;
-    color: #e2e8f0;
-    border-bottom: 1px solid #334155;
-    font-size: 0.85em;
-    transition: background 0.2s ease;
+/* (Pilihan) Untuk cantikkan scrollbar supaya nampak moden */
+.custom-select-dropdown::-webkit-scrollbar {
+    width: 8px;
 }
-
-.custom-select-dropdown .dropdown-item:last-child {
-    border-bottom: none;
+.custom-select-dropdown::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 8px;
 }
-
-.custom-select-dropdown .dropdown-item:hover {
-    background-color: #5bc0be; /* Warna turquoise bila mouse lalu */
-    color: #1a1a2e; /* Teks jadi gelap bila di-highlight */
-    font-weight: bold;
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 8px;
+}
+.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #5bc0be;
 }
 
 /* Custom Scrollbar untuk Dropdown supaya tak nampak kelabu biasa */

@@ -9,12 +9,12 @@
 </head>
 <body>
     <div class="top-right-nav">
-        <button class="btn-logout" onclick="logoutUser()">Log Keluar</button>
+        <button class="btn-logout" onclick="logoutUser()">Log Out</button>
     </div>
 
     <header>
-       <h1>CGPA Calculator</h1>
-       <p>(Kejuruteraan Elektronik)</p>
+       <h1>CGPA CALCULATOR</h1>
+       <p>(Bachelor of Electronic Engineering with Honours)</p>
     </header>
 
     <div id="programSelection" class="container" style="display: none;">
@@ -33,7 +33,6 @@
    </div>
 
     <div id="calculatorPage" class="container" style="display: block;">
-        <h2 id="programTitle">Bachelor of Electronic Engineering with Honours</h2>
 
         <div class="semester-selector">
             <label>Saya sekarang di: </label>
@@ -56,7 +55,7 @@
             <h3>Keputusan</h3>
             <div class="result-box">
                 <div class="result-item">
-                    <span>GPA Semester Semasa:</span>
+                    <span>GPA (Semester Semasa): </span>
                     <span id="currentGPA" class="gpa-value">-</span>
                 </div>
                 <div class="result-item cgpa-main">
@@ -70,7 +69,7 @@
         <div class="action-buttons">
             <button onclick="calculateAll()" class="btn-primary">Kira CGPA</button>
             <button onclick="saveData()" class="btn-secondary">Simpan Data</button>
-            <button onclick="clearAll()" class="btn-danger">Reset Semua</button>
+            <button onclick="clearAll()" class="btn-danger">Reset</button>
         </div>
 
         <div class="prediction-section">
@@ -78,10 +77,10 @@
             <div class="prediction-input">
                 <label>Target CGPA yang anda inginkan:</label>
                 <input type="number" id="targetCGPA" min="0" max="4" step="0.01" placeholder="Contoh: 3.75">
-                <button onclick="predictGrades()" class="btn-predict">Ramal Gred Diperlukan</button>
+                <button onclick="predictGrades()" class="btn-predict">Predict Grade</button>
 
                 <button onclick="printReport()" class="btn-print" style="background: #2d3748; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: 5px;">
-                    🖨️ Cetak Slip PDF
+                    🖨️ Print Slip
                 </button>
             </div>
             <div id="predictionResults" class="prediction-results"></div>
