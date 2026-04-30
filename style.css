@@ -1,50 +1,39 @@
-/* ========================================= */
-/* GLOBAL RESET (WAJIB ADA UNTUK ELAK CACAT) */
-/* ========================================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box !important;
-}
-
-/* --- TAMBAH KOD INI SUPAYA WARNA PENUH SATU SKRIN --- */
-html, body {
-    width: 100%;
-    min-height: 100vh;
-    background-color: #0B132B !important; /* Warna Deep Navy dipaksa ke seluruh skrin */
-    color: #ffffff;
-    overflow-x: hidden; /* Elak skrin boleh meleret ke kiri/kanan (horizontal scroll) */
-}
-
+/* =========================================
+   ROOT VARIABLES
+   ========================================= */
 :root {
-  --bg-black: #050505;
-  --dark-blue: #0b132b;
-  --card-blue: #1c2541;
-  --sky-blue: #5bc0be;
-  --sky-blue-hover: #3a506b;
-  --text-white: #ffffff;
+    --bg-black:        #050505;
+    --dark-blue:       #0b132b;
+    --card-blue:       #1c2541;
+    --sky-blue:        #5bc0be;
+    --sky-blue-hover:  #3a506b;
+    --text-white:      #ffffff;
 }
 
-/* Reset & Base Styles */
-* {
+/* =========================================
+   GLOBAL RESET & BASE
+   ========================================= */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  min-height: 100vh;
-  margin: 0;
-  background: linear-gradient(135deg, var(--bg-black) 0%, var(--dark-blue) 100%);
-  color: var(--text-white);
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--bg-black) 0%, var(--dark-blue) 100%);
+    color: var(--text-white);
 }
 
-
-/* Header */
+/* =========================================
+   LAYOUT
+   ========================================= */
 header {
     text-align: center;
-    color:#5bc0be;
+    color: var(--sky-blue);
     padding: 30px 20px;
     margin-bottom: 30px;
 }
@@ -52,7 +41,6 @@ header {
 header h1 {
     font-size: 2.5em;
     margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 header p {
@@ -60,28 +48,152 @@ header p {
     opacity: 0.9;
 }
 
-/* Container */
 .container {
     max-width: 1000px;
     margin: 40px auto;
-    
-    /* Guna warna biru gelap yang sedia ada dalam :root anda */
-    background: var(--card-blue); 
-    
-    /* Tukar tulisan kembali kepada putih */
-    color: var(--text-white); 
-    
+    background: var(--card-blue);
+    color: var(--text-white);
     border-radius: 15px;
     padding: 40px;
-    
-    /* Gelapkan sedikit bayang-bayang supaya nampak lebih dalam */
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
-    
-    /* Tambah sempadan nipis warna cyan supaya ia 'pop' */
-    border: 1px solid rgba(91, 192, 190, 0.2); 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    border: 1px solid rgba(91, 192, 190, 0.2);
 }
 
-/* Program Selection */
+footer {
+    text-align: center;
+    color: var(--text-white);
+    padding: 20px;
+    margin-top: 30px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+.top-right-nav {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.btn-logout {
+    background: transparent;
+    color: var(--sky-blue);
+    border: 1px solid var(--sky-blue);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(91, 192, 190, 0.15);
+    color: var(--text-white);
+}
+
+.nav-back-container {
+    padding: 15px 20px;
+}
+
+.btn-back {
+    background-color: #46bb92;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #333333;
+    transform: translateX(-5px);
+}
+
+/* =========================================
+   BUTTONS (single source of truth)
+   ========================================= */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 24px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 999px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+
+.btn-primary {
+    background: var(--sky-blue);
+    color: var(--dark-blue);
+    box-shadow: 0 10px 25px rgba(91, 192, 190, 0.35);
+}
+
+.btn-primary:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--sky-blue);
+    border: 1.5px solid var(--sky-blue);
+}
+
+.btn-secondary:hover {
+    background: rgba(91, 192, 190, 0.08);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-predict {
+    background: #fd7e14;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.btn-predict:hover {
+    background: #e96b0f;
+}
+
+.secondary-btn {
+    background: transparent;
+    color: var(--sky-blue);
+    border: 1px solid var(--sky-blue);
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.secondary-btn:hover {
+    background: rgba(91, 192, 190, 0.1);
+    color: var(--text-white);
+    border-color: var(--text-white);
+}
+
+/* =========================================
+   PROGRAM SELECTION
+   ========================================= */
 .program-buttons {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -105,35 +217,15 @@ header p {
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
 }
 
-.program-btn h3 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
+.program-btn h3 { font-size: 1.5em; margin-bottom: 10px; }
+.program-btn p  { opacity: 0.9; font-size: 0.95em; }
 
-.program-btn p {
-    opacity: 0.9;
-    font-size: 0.95em;
-}
-
-/* Back Button */
-.back-btn {
-    background: #6c757d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    font-size: 0.95em;
-}
-
-.back-btn:hover {
-    background: #5a6268;
-}
-
-/* Semester Selector */
+/* =========================================
+   SEMESTER SELECTOR
+   ========================================= */
 .semester-selector {
-    background: #f8f9fa;
+    background-color: var(--card-blue);
+    border: 1px solid rgba(91, 192, 190, 0.3);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -144,17 +236,22 @@ header p {
     font-weight: 600;
     margin-right: 10px;
     font-size: 1.1em;
+    color: var(--sky-blue);
 }
 
 .semester-selector select {
+    background-color: var(--card-blue);
+    color: var(--text-white);
+    border: 2px solid var(--sky-blue);
     padding: 10px 20px;
-    border: 2px solid #667eea;
     border-radius: 8px;
     font-size: 1em;
     cursor: pointer;
 }
 
-/* Tabs */
+/* =========================================
+   TABS
+   ========================================= */
 .tabs {
     display: flex;
     gap: 10px;
@@ -164,45 +261,36 @@ header p {
 
 .tab {
     padding: 12px 20px;
-    background: #e9ecef;
-    border: none;
+    background-color: var(--card-blue);
+    color: var(--text-white);
+    border: 1px solid rgba(91, 192, 190, 0.3);
     border-radius: 8px 8px 0 0;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
 }
 
-.tab:hover {
-    background: #dee2e6;
-}
+.tab:hover  { background: rgba(91, 192, 190, 0.2); }
+.tab.active { background: var(--sky-blue); color: var(--dark-blue); border-color: var(--sky-blue); }
 
-.tab.active {
-    background: #667eea;
-    color: white;
-}
-
-/* Semester Content */
-.semester-data {
-    display: none;
-}
-
-.semester-data.active {
-    display: block;
-}
+/* =========================================
+   SEMESTER CONTENT
+   ========================================= */
+.semester-data        { display: none; }
+.semester-data.active { display: block; }
 
 .semester-header {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 8px;
+    border-bottom: 2px solid rgba(91, 192, 190, 0.3);
+    padding-bottom: 15px;
     margin-bottom: 20px;
 }
 
-.semester-header h3 {
-    color: #667eea;
-    margin-bottom: 5px;
-}
+.semester-header h3,
+.semester-header p { color: var(--text-white); }
 
-/* Subject Table */
+/* =========================================
+   SUBJECT TABLE
+   ========================================= */
 .subject-table {
     width: 100%;
     border-collapse: collapse;
@@ -210,8 +298,8 @@ header p {
 }
 
 .subject-table th {
-    background: #667eea;
-    color: white;
+    background-color: var(--card-blue);
+    color: var(--sky-blue);
     padding: 15px;
     text-align: left;
     font-weight: 600;
@@ -219,17 +307,19 @@ header p {
 
 .subject-table td {
     padding: 12px 15px;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(91, 192, 190, 0.2);
 }
 
 .subject-table tbody tr:hover {
-    background: #f8f9fa;
+    background-color: rgba(91, 192, 190, 0.05);
 }
 
 .subject-table select {
     width: 100%;
     padding: 8px;
-    border: 2px solid #dee2e6;
+    background-color: var(--card-blue);
+    color: var(--text-white);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
     border-radius: 6px;
     font-size: 0.95em;
     cursor: pointer;
@@ -237,20 +327,24 @@ header p {
 
 .subject-table select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--sky-blue);
 }
 
 .badge {
-    background: #e9ecef;
+    background-color: var(--card-blue);
+    color: var(--sky-blue);
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.85em;
     font-weight: 600;
 }
 
-/* Results */
+/* =========================================
+   RESULTS
+   ========================================= */
 .results {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--dark-blue);
+    border: 1px solid rgba(91, 192, 190, 0.3);
     color: white;
     padding: 30px;
     border-radius: 12px;
@@ -258,54 +352,27 @@ header p {
 }
 
 .results h3 {
+    color: var(--sky-blue);
     margin-bottom: 20px;
     font-size: 1.5em;
 }
 
-.result-box {
-    display: grid;
-    gap: 15px;
-}
+.result-box     { display: grid; gap: 15px; }
 
 .result-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255,255,255,0.1);
+    background-color: var(--card-blue);
+    border-left: 4px solid var(--sky-blue);
     padding: 15px;
     border-radius: 8px;
 }
 
 .result-item.cgpa-main {
-    background: rgba(255,255,255,0.2);
+    background-color: var(--dark-blue);
     font-size: 1.2em;
     font-weight: 700;
-}
-
-/* Mesej Anugerah Dekan */
-.dekan-alert {
-    margin-top: 20px;
-    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); /* Warna Emas */
-    color: #855300; /* Teks warna coklat gelap untuk kontras dengan emas */
-    padding: 15px 20px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 1.1em;
-    font-weight: 500;
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* Animasi melantun kecil */
-}
-
-/* Khas untuk menebalkan teks tahniah */
-.dekan-alert strong {
-    font-size: 1.2em;
-    color: #663300;
-}
-
-/* Animasi untuk kotak mesej (Pilihan, tapi cantik!) */
-@keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
 }
 
 .gpa-value, .cgpa-value {
@@ -313,7 +380,32 @@ header p {
     font-weight: 700;
 }
 
-/* Action Buttons */
+/* =========================================
+   DEAN'S LIST ALERT
+   ========================================= */
+.dekan-alert {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #855300;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.dekan-alert strong { font-size: 1.2em; color: #663300; }
+
+@keyframes popIn {
+    0%   { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+/* =========================================
+   ACTION BUTTONS ROW
+   ========================================= */
 .action-buttons {
     display: flex;
     gap: 15px;
@@ -321,56 +413,19 @@ header p {
     margin: 20px 0;
 }
 
-.btn-primary, .btn-secondary, .btn-danger, .btn-predict {
-  padding: 14px 0;
-  border-radius: 999px;      /* bentuk kapsul */
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* warna utama sebijik dengan tema kamu */
-.btn-primary {
-  background: var(--sky-blue);     /* #5bc0be */
-  color: var(--dark-blue);         /* #0b132b */
-  box-shadow: 0 10px 25px rgba(91,192,190,0.35);
-}
-
-.btn-primary:hover {
-  background: #ffffff;
-  color: var(--dark-blue);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--sky-blue);
-  border: 1.5px solid var(--sky-blue);
-}
-
-.btn-secondary:hover {
-  background: rgba(91,192,190,0.08);
-}
-
-
-
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #c82333;
-}
-
-/* Prediction Section */
+/* =========================================
+   PREDICTION SECTION
+   ========================================= */
 .prediction-section {
-    background: #f8f9fa;
+    background-color: var(--card-blue);
+    border: 1px solid rgba(91, 192, 190, 0.3);
     padding: 30px;
     border-radius: 12px;
     margin-top: 30px;
 }
 
 .prediction-section h3 {
-    color: #667eea;
+    color: var(--sky-blue);
     margin-bottom: 20px;
 }
 
@@ -382,204 +437,49 @@ header p {
     margin-bottom: 20px;
 }
 
-.prediction-input label {
-    font-weight: 600;
-}
+.prediction-input label { font-weight: 600; }
 
 .prediction-input input {
     padding: 12px;
-    border: 2px solid #dee2e6;
+    background: var(--dark-blue);
+    color: var(--text-white);
+    border: 1px solid var(--sky-blue);
     border-radius: 8px;
     font-size: 1em;
     width: 150px;
 }
 
-.btn-predict {
-    background: #fd7e14;
-    color: white;
-}
-
-.btn-predict:hover {
-    background: #e96b0f;
-}
-
 .prediction-results {
     margin-top: 20px;
     padding: 20px;
-    background: white;
+    background: var(--dark-blue);
+    color: var(--text-white);
     border-radius: 8px;
-    border-left: 4px solid #fd7e14;
+    border: 1px solid rgba(253, 126, 20, 0.4);
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    color: white;
-    padding: 20px;
-    margin-top: 30px;
-    font-size: 0.9em;
-    opacity: 0.8;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-    }
-    
-    header h1 {
-        font-size: 1.8em;
-    }
-    
-    .tabs {
-        overflow-x: auto;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-    }
-    
-    .prediction-input {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .prediction-input input {
-        width: 100%;
-    }
-}
-.btn {
-  width: 100%;
-  padding: 14px 0;
-  margin: 8px 0;
-  border: none;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-
-
-.button-group {
-    margin: 25px 0;
-}
-
-.btn {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: #007bff;
-    color: #fff;
-}
-
-.btn-secondary {
-    background: #6c757d;
-    color: #fff;
-}
-
-form input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-/* Halaman login & register (kad putih di tengah, background biru) */
-body.auth-page {
-    margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Poppins", sans-serif;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #003399, #4fc3f7);
-}
-
-/* Kad utama */
+/* =========================================
+   AUTH PAGES (LOGIN / REGISTER)
+   ========================================= */
 .home-container {
     width: 100%;
     max-width: 380px;
-    
-    /* TAMBAH BARIS INI: 'auto' akan menolak kotak ini tepat ke tengah skrin */
-    margin: 80px auto; 
-    
+    margin: 80px auto;
     padding: 32px 28px;
-    background: #ffffff;
+    background: var(--card-blue);
+    border: 1px solid rgba(91, 192, 190, 0.3);
     border-radius: 18px;
-    box-shadow: 0 22px 60px rgba(0,0,0,0.25);
+    box-shadow: 0 22px 60px rgba(0,0,0,0.4);
     text-align: left;
 }
 
-/* Tajuk & sub‑tajuk */
-.home-container h1 {
-    font-size: 24px;
-    margin-bottom: 6px;
-    color: #003399;
-}
+.home-container h1,
+.home-container h2,
+.home-container h3 { color: var(--sky-blue); margin-bottom: 6px; }
 
-.home-container .subtitle {
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 24px;
-}
+.home-container p,
+.home-container .subtitle { font-size: 13px; color: #a0aec0; margin-bottom: 24px; }
 
-/* Input */
-.home-container form input {
-    width: 100%;
-    padding: 10px 12px;
-    margin: 8px 0 14px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    font-size: 14px;
-}
-
-/* Butang umum */
-.btn {
-    width: 100%;
-    padding: 11px 0;
-    border-radius: 999px;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s;
-}
-
-/* Butang utama biru */
-.btn-primary {
-    background: #1e88e5;
-    color: #ffffff;
-    box-shadow: 0 10px 25px rgba(30,136,229,0.45);
-}
-
-.btn-primary:hover {
-    background: #1565c0;
-    transform: translateY(-1px);
-}
-
-/* Butang sekunder */
-.btn-secondary {
-    background: #eef2ff;
-    color: #1d4ed8;
-    margin-top: 8px;
-}
-
-.btn-secondary:hover {
-    background: #e0e7ff;
-}
-
-/* Teks link kecil bawah form */
 .link-text {
     margin-top: 16px;
     font-size: 13px;
@@ -588,395 +488,12 @@ body.auth-page {
 }
 
 .link-text a {
-    color: #1e88e5;
+    color: var(--sky-blue);
     text-decoration: none;
     font-weight: 600;
 }
 
-.secondary-btn {
-  background: transparent;
-  color: var(--sky-blue);
-  border: 1px solid var(--sky-blue);
-  border-radius: 999px;
-  padding: 8px 20px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.secondary-btn:hover {
-  background: rgba(91, 192, 190, 0.1);
-  color: var(--text-white);
-  border-color: var(--text-white);
-}
-
-
-.header-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.btn-logout {
-  background: #e0e0e0;
-  color: #333;
-  padding: 6px 14px;
-  border-radius: 16px;
-  border: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-.btn-logout:hover {
-  background: #d0d0d0;
-}
-
-/* style.css */
-
-/* Menyasarkan butang-butang secara kolektif untuk gaya asas yang konsisten */
-/* Menyasarkan butang-butang dalam kontena <div> yang berdekatan dengan Keputusan */
-#results + div > button {
-    font-family: 'Poppins', sans-serif; /* Pastikan fon Poppins digunakan */
-    font-weight: 500;
-    padding: 12px 24px; /* Padding yang lebih konsisten */
-    border-radius: 8px; /* Sudut tumpul yang bersih */
-    border: 2px solid transparent; /* Sempadan bersih, warna telus untuk butang padat */
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    text-shadow: none !important; /* MEMBUANG MASALAH SEMPADAN TEKS HITAM */
-    outline: none;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-/* Menyasarkan butang-butang secara individu berdasarkan kedudukannya (jika HTML anda seperti di atas) */
-
-/* Butang 1: "Kira CGPA" - Biru Padat */
-#results + div > button:nth-of-type(1) {
-    background-color: rgb(0, 0, 255); /* Biru padat */
-    color: #ffffff; /* Teks putih */
-    border-color: rgb(0, 0, 255); /* Sempadan biru bersih */
-}
-
-#results + div > button:nth-of-type(1):hover {
-    background-color: rgba(0, 0, 255, 0.85);
-    border-color: rgba(0, 0, 255, 0.85);
-}
-
-/* Butang 2: "Simpan Data" - Gaya Rangka yang Bersih */
-#results + div > button:nth-of-type(2) {
-    background-color: #ffffff; /* Latar belakang putih bersih */
-    color: rgb(0, 0, 255); /* Teks biru tulen */
-    border: 2px solid rgb(0, 0, 255); /* Sempadan biru bersih */
-}
-
-#results + div > button:nth-of-type(2):hover {
-    background-color: rgba(0, 0, 255, 0.1);
-}
-
-/* Butang 3: "Reset Semua" - Merah Padat untuk 'Perhatian' */
-#results + div > button:nth-of-type(3) {
-    background-color: rgb(255, 0, 0); /* Merah padat */
-    color: #ffffff; /* Teks putih */
-    border-color: rgb(255, 0, 0); /* Sempadan merah bersih */
-}
-
-#results + div > button:nth-of-type(3):hover {
-    background-color: rgba(255, 0, 0, 0.85);
-    border-color: rgba(255, 0, 0, 0.85);
-}
-
-/* Menambahkan kontena butang untuk keselarasan (berdasarkan image_2.png) */
-/* Kontena ini berada di bawah .results dan di atas kontena Ramalan */
-#results + div {
-    display: flex;
-    justify-content: flex-start; /* Sejajarkan ke kiri, konsisten dengan elemen lain */
-    gap: 15px; /* Berikan jurang antara butang */
-    margin-top: 25px; /* Berikan margin atas */
-    padding-left: 15px; /* Margin sisi */
-    margin-bottom: 25px; /* Margin bawah */
-}
-
-/* ========================================= */
-/* TEMA DARK MODE (BIRU GELAP & CYAN) */
-/* ========================================= */
-
-/* 1. KEMASKINI WARNA THEME DI :ROOT (TAMBAH WARNA BARU) */
-:root {
-    --theme-dark-blue: #0b132b; /* Biru gelap untuk latar belakang container */
-}
-
-/* 2. TUKAR CONTAINER KEPADA MOD GELAP */
-.container {
-    background-color: var(--theme-dark-blue);
-    color: var(--text-white); /* Teks putih secara automatik */
-    border: 1px solid rgba(91, 192, 190, 0.2); /* Sempadan nipis warna cyan */
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6); /* Bayang-bayang yang lebih gelap */
-}
-
-/* 3. TUKAR ELEMEN-ELEMEN UI DALAMAN */
-
-/* A. Kotak Pilihan Semester */
-.semester-selector {
-    background-color: var(--card-blue); /* Gelapkan latar belakang */
-    border: 1px solid rgba(91, 192, 190, 0.3);
-}
-
-.semester-selector label {
-    color: var(--sky-blue); /* Teks "Saya sekarang di" jadi cyan */
-}
-
-.semester-selector select {
-    background-color: var(--card-blue);
-    color: var(--text-white);
-    border: 2px solid var(--sky-blue);
-}
-
-/* B. Jadual Subjek (Table) */
-.subject-table th {
-    background-color: var(--card-blue);
-    color: var(--sky-blue); /* Tajuk jadual jadi cyan */
-}
-
-.subject-table td {
-    border-bottom: 1px solid rgba(91, 192, 190, 0.2);
-}
-
-.subject-table tbody tr:hover {
-    background-color: rgba(91, 192, 190, 0.05); /* Kesan hover yang halus */
-}
-
-.subject-table select {
-    background-color: var(--card-blue);
-    color: var(--text-white);
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
-}
-
-.badge {
-    background-color: var(--card-blue);
-    color: var(--sky-blue); /* Badge (Taraf/Kredit) jadi cyan */
-}
-
-/* C. Kotak Keputusan (Result Box) */
-.result-item {
-    background-color: var(--card-blue);
-    border-left: 4px solid var(--sky-blue); /* Sempadan sisi warna cyan */
-}
-
-.result-item.cgpa-main {
-    background-color: var(--theme-dark-blue);
-}
-
-/* D. Kotak Amaran Dekan (Emas tetap dikekalkan sebagai sorotan) */
-.dekan-alert {
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
-}
-
-/* E. Kotak Ramalan (Prediction Results) */
-.prediction-results {
-    background-color: var(--card-blue);
-    border: 1px solid rgba(255, 126, 20, 0.4); /* Sempadan oren */
-}
-
-/* F. KEMASKINI BAHAGIAN TAB (SEM 1, SEM 2...) */
-.tab {
-    background-color: var(--card-blue);
-    color: var(--text-white);
-    border: 1px solid rgba(91, 192, 190, 0.3);
-}
-
-.tab:hover {
-    background-color: rgba(91, 192, 190, 0.2);
-}
-
-/* Warna tab yang sedang aktif (dipilih) */
-.tab.active {
-    background-color: var(--sky-blue);
-    color: var(--theme-dark-blue); /* Teks jadi gelap supaya jelas di atas cyan */
-    border-color: var(--sky-blue);
-}
-
-/* G. KEMASKINI KOTAK HEADER SEMESTER (Semester 1 / Jumlah Kredit) */
-.semester-header {
-    background-color: transparent; /* Buang warna putih, jadikan ia lutsinar menyatu dengan latar belakang */
-    border-bottom: 2px solid rgba(91, 192, 190, 0.3); /* Tambah garisan bawah sahaja supaya kemas */
-    border-radius: 0;
-}
-
-.semester-header h3, 
-.semester-header p {
-    color: var(--text-white); /* Pastikan tulisan Jumlah Kredit jadi putih */
-}
-
-/* H. KEMASKINI KAWASAN KALKULATOR RAMALAN (Bawah Sekali) */
-.prediction-section {
-    background-color: var(--card-blue);
-    border: 1px solid rgba(91, 192, 190, 0.3);
-}
-
-/* Gelapkan kotak input teks supaya tak sakit mata */
-.prediction-input input {
-    background-color: var(--theme-dark-blue);
-    color: var(--text-white);
-    border: 1px solid var(--sky-blue);
-}
-
-/* Tukar kotak keputusan ramalan yang putih di bawah butang Oren */
-.prediction-results {
-    background-color: var(--theme-dark-blue);
-    color: var(--text-white);
-    border: 1px solid rgba(253, 126, 20, 0.4); /* Sempadan kekal oren mengikut tema butang */
-}
-
-/* F. Buang Warna Ungu Pada Kotak Keputusan */
-.results {
-    background: var(--theme-dark-blue); /* Ini akan memadam gradient ungu asal */
-    border: 1px solid rgba(91, 192, 190, 0.3); /* Tambah sempadan cyan nipis */
-}
-
-.results h3 {
-    color: var(--sky-blue); /* Tukar tulisan 'Keputusan' kepada warna cyan */
-}
-
-/* ========================================= */
-/* POSISI BUTANG LOG KELUAR (ATAS KANAN)     */
-/* ========================================= */
-
-.top-right-nav {
-    position: absolute; /* Membenarkan kita meletakkannya secara bebas */
-    top: 20px;          /* Jarak 20px dari bumbung skrin */
-    right: 20px;        /* Jarak 20px dari dinding kanan skrin */
-    z-index: 1000;      /* Pastikan ia sentiasa berada di lapisan paling atas */
-}
-
-/* Sedikit kemasan untuk Butang Log Keluar itu sendiri */
-.btn-logout {
-    background: transparent;
-    color: var(--sky-blue);
-    border: 1px solid var(--sky-blue);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-logout:hover {
-    background: rgba(91, 192, 190, 0.15); /* Kesan hover cyan yang lembut */
-    color: var(--text-white);
-}
-
-/* ========================================= */
-/* TEMA DARK MODE: HALAMAN UTAMA (INDEX)     */
-/* ========================================= */
-
-/* 1. Tukar kotak putih kepada biru gelap */
-.home-container {
-    background-color: var(--card-blue, #1c2541); 
-    border: 1px solid rgba(91, 192, 190, 0.3); /* Sempadan cyan nipis */
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6); /* Bayang-bayang gelap */
-}
-
-/* 2. Tukar warna teks di dalam kotak */
-.home-container h2, 
-.home-container h3, 
-.home-container h1 {
-    color: var(--sky-blue); /* Tajuk "Selamat datang" jadi Cyan */
-}
-
-.home-container p {
-    color: #a0aec0; /* Teks penerangan jadi kelabu cerah */
-}
-
-/* 3. Gaya Butang Pertama (Login Pelajar) */
-.home-container button:nth-of-type(1),
-.home-container a:nth-of-type(1) {
-    background-color: var(--sky-blue) !important; /* Warna cyan penuh (solid) */
-    color: var(--theme-dark-blue, #0b132b) !important; /* Teks gelap supaya kontras */
-    border: none !important;
-    font-weight: 600 !important;
-    box-shadow: 0 4px 15px rgba(91, 192, 190, 0.4) !important; /* Efek 'glow' (bersinar) */
-    transition: all 0.3s ease;
-}
-
-.home-container button:nth-of-type(1):hover,
-.home-container a:nth-of-type(1):hover {
-    background-color: #4ab3b1 !important; /* Cyan sedikit pekat bila kursor di atas */
-    box-shadow: 0 6px 20px rgba(91, 192, 190, 0.7) !important; /* Glow makin terang */
-    transform: translateY(-2px); /* Animasi butang terangkat sedikit */
-}
-
-/* 4. Gaya Butang Kedua (Guest) - MINIMALIS TAPI JELAS */
-.home-container button:nth-of-type(2),
-.home-container a:nth-of-type(2) {
-    background-color: rgba(255, 255, 255, 0.05) !important; /* Ada isi kelabu sedikit, bukan kosong sepenuhnya */
-    color: #e2e8f0 !important; /* Teks putih keabu-abuan terang */
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    transition: all 0.3s ease;
-}
-
-.home-container button:nth-of-type(2):hover,
-.home-container a:nth-of-type(2):hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    color: #ffffff !important;
-}
-
-/* Efek Hover untuk Simulator Dropdown */
-.live-grade-editor:hover {
-    background-color: rgba(91, 192, 190, 0.1) !important;
-}
-
-.live-grade-editor:focus {
-    box-shadow: 0 0 0 2px rgba(91, 192, 190, 0.5);
-}
-
-/* =========================================
-   GAYA UNTUK HALAMAN LOG MASUK HIBRID
-   ========================================= */
-
-/* Butang Log Masuk Google */
-/* Gantikan blok .btn-google asal dengan ini */
-button.btn-google {
-    width: 100%;
-    padding: 12px;
-    background-color: #ffffff !important;
-    color: #444444 !important;
-    border-radius: 8px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important; /* Untuk buang kesan glow cyan jika ada */
-}
-
-button.btn-google:hover {
-    background-color: #f1f1f1 !important;
-}
-
-/* Garisan Pembahagi (ATAU) */
-.divider {
-    text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    line-height: 0.1em;
-    margin: 25px 0;
-}
-
-.divider span {
-    background: var(--theme-dark-blue, #1e293b); /* Tukar kod warna ini jika kotak anda warna lain */
-    padding: 0 15px;
-    color: #8892b0;
-    font-size: 0.85em;
-    font-weight: 600;
-}
-
-/* Borang Log Masuk (No. Matrik & Kata Laluan) */
+/* Auth Form Inputs */
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -989,271 +506,81 @@ button.btn-google:hover {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(91, 192, 190, 0.3);
     border-radius: 8px;
-    color: #ffffff;
+    color: var(--text-white);
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.3s ease;
-    box-sizing: border-box; /* Pastikan input tidak terkeluar kotak */
+    transition: border-color 0.3s;
+    box-sizing: border-box;
 }
 
-.auth-form input:focus {
-    border-color: #5bc0be;
-}
+.auth-form input:focus { border-color: var(--sky-blue); }
 
-.nav-back-container {
-    padding: 15px 20px;
-    display: flex;
-    justify-content: flex-start; /* Tolak ke kiri */
-}
-
-.btn-back {
-    background-color: #46bb92; /* Warna kelabu gelap supaya tak terlalu terang */
-    color: white;
+/* Google Button */
+button.btn-google {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #444444;
+    border-radius: 8px;
     border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    transition: 0.3s;
-}
-
-.btn-back:hover {
-    background-color: #333333;
-    transform: translateX(-5px); /* Efek gerak ke kiri sikit bila hover */
-}
-
-/* Untuk Skrin Telefon (Bawah 600px) */
-@media screen and (max-width: 600px) {
-    .container {
-        width: 95%; /* Guna hampir keseluruhan skrin */
-        padding: 10px;
-    }
-
-    h1 { font-size: 1.5rem; }
-
-    /* Jadual boleh diskrol ke tepi supaya tak pecah */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch; /* Biar skrol rasa 'smooth' di iPhone */
-    }
-
-    .subject-table th, .subject-table td {
-        font-size: 0.8rem; /* Kecilkan tulisan sikit */
-        padding: 8px 4px;
-    }
-
-    /* Butang jadi lebar penuh supaya senang tekan guna ibu jari */
-    .action-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .btn-primary, .btn-secondary, .btn-danger {
-        width: 100%;
-    }
-}
-
-/* ============================================ */
-/* CSS UNTUK CETAKAN PDF (PRINT MEDIA QUERY)    */
-/* ============================================ */
-@media print {
-    /* 1. Sembunyikan elemen yang menyemakkan PDF */
-    .action-buttons, 
-    .prediction-section, 
-    .btn-print, 
-    .semester-selector,
-    /* Tunjukkan teks gred biasa masa cetakan sahaja */
-    .print-gred-text {
-        display: inline-block !important;
-        font-weight: bold;
-        color: black !important;
-    }
-    .top-right-nav,
-    footer,
-    button,
-    select {
-        display: none !important;
-    }
-
-    /* 2. Format Kertas & Warna (Jimat Dakwat) */
-    body {
-        background-color: white !important;
-        color: black !important;
-        font-family: 'Times New Roman', serif;
-    }
-
-    .container {
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-shadow: none !important;
-        background: transparent !important;
-    }
-
-    /* 3. Cantikkan Jadual */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-
-    th, td {
-        border: 1px solid #000 !important;
-        padding: 8px;
-        text-align: left;
-        color: black !important;
-    }
-
-    /* 4. Tajuk Rasmi Pada Dokumen */
-    body::before {
-        content: "SLIP KEPUTUSAN PEPERIKSAAN ";
-        display: block;
-        text-align: center;
-        font-size: 16pt;
-        font-weight: bold;
-        margin-bottom: 20px;
-        text-decoration: underline;
-    }
-}
-
-/* ============================================ */
-/* CUSTOM SEARCHABLE DROPDOWN                   */
-/* ============================================ */
-/* --- GAYA DROPDOWN CARIAN TERAPUNG --- */
-.custom-select-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #1e293b; 
-    border: 1px solid #5bc0be;
-    border-radius: 8px;
-    
-    /* INI 2 BARIS PALING PENTING UNTUK SCROLL */
-    max-height: 250px; 
-    overflow-y: auto; 
-    
-    z-index: 1000;
-    display: none;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    margin-top: 5px;
-}
-
-/* (Pilihan) Untuk cantikkan scrollbar supaya nampak moden */
-.custom-select-dropdown::-webkit-scrollbar {
-    width: 8px;
-}
-.custom-select-dropdown::-webkit-scrollbar-track {
-    background: #1e293b;
-    border-radius: 8px;
-}
-.custom-select-dropdown::-webkit-scrollbar-thumb {
-    background: #475569;
-    border-radius: 8px;
-}
-.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
-    background: #5bc0be;
-}
-
-/* Custom Scrollbar untuk Dropdown supaya tak nampak kelabu biasa */
-.custom-select-dropdown::-webkit-scrollbar {
-    width: 8px;
-}
-.custom-select-dropdown::-webkit-scrollbar-track {
-    background: #1e293b;
-    border-radius: 0 0 8px 0;
-}
-.custom-select-dropdown::-webkit-scrollbar-thumb {
-    background: #5bc0be;
-    border-radius: 4px;
-}
-
-/* --- BESARKAN KOTAK DROPDOWN (PROGRAM) --- */
-select {
-    padding: 7px 10px !important; /* Tambah ruang atas/bawah dan kiri/kanan */
-    font-size: 1rem !important; /* Besarkan sedikit tulisan */
-    border-radius: 5%;
-    height: auto !important; /* Elak kotak terpotong */
-    cursor: pointer;
-}
-
-select option {
-    padding: 10px; /* Jarakkan setiap pilihan dalam senarai */
-    font-size: 1rem;
-}
-
-/* --- KOTAK KATA LALUAN (UNTUK BUTANG MATA) --- */
-.password-container {
-    position: relative;
     display: flex;
     align-items: center;
-}
-
-.password-container input {
-    width: 100%;
-    padding-right: 40px; /* Tinggalkan ruang untuk ikon mata di sebelah kanan */
-}
-
-.toggle-password {
-    position: absolute;
-    right: 15px;
+    justify-content: center;
+    gap: 12px;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 1.2rem;
-    user-select: none;
-    opacity: 0.7;
-    transition: 0.3s;
+    margin: 15px 0 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.toggle-password:hover {
-    opacity: 1;
+button.btn-google:hover { background-color: #f1f1f1; }
+
+/* Divider */
+.divider {
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    line-height: 0.1em;
+    margin: 25px 0;
 }
 
-/* --- LAYOUT PENDAFTARAN (WARNA ASAL DIKEMBALIKAN) --- */
+.divider span {
+    background: var(--dark-blue);
+    padding: 0 15px;
+    color: #8892b0;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+/* =========================================
+   REGISTER PAGE
+   ========================================= */
 .register-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* WARNA ASAL: Biru Kelasi Pekat (Deep Navy) */
-    background-color: #0B132B; 
+    background-color: var(--dark-blue);
     padding: 20px;
     font-family: 'Poppins', sans-serif;
 }
 
 .register-card {
-    /* WARNA ASAL: Biru kad yang sedikit cerah dari background */
-    background: #1C2541; 
+    background: var(--card-blue);
     width: 100%;
     max-width: 450px;
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    /* Garisan border yang sangat halus */
-    border: 1px solid #3A506B; 
+    border: 1px solid #3A506B;
 }
 
-.register-header {
-    text-align: center;
-    margin-bottom: 35px;
-}
+.register-header { text-align: center; margin-bottom: 35px; }
+.register-header h2 { color: #ffffff; font-size: 1.8rem; margin-bottom: 8px; letter-spacing: 1px; }
+.register-header p  { color: #A0AAB2; font-size: 0.9rem; }
 
-.register-header h2 {
-    color: #ffffff;
-    font-size: 1.8rem;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-}
-
-.register-header p {
-    color: #A0AAB2; /* Kelabu kebiruan yang lembut */
-    font-size: 0.9rem;
-}
-
-/* --- INPUT & SELECT STYLING --- */
-.custom-input-group {
-    margin-bottom: 22px;
-}
+/* Input Groups */
+.custom-input-group { margin-bottom: 22px; }
 
 .custom-input-group label {
     display: block;
@@ -1274,35 +601,30 @@ select option {
     left: 15px;
     font-size: 1.1rem;
     z-index: 5;
-    /* Tukar ikon jadi warna turquoise supaya masuk tema */
-    color: #5bc0be; 
+    color: var(--sky-blue);
     opacity: 0.8;
 }
 
-/* Style untuk Input & Select */
-.input-wrapper input, 
+.input-wrapper input,
 .input-wrapper select {
     width: 100%;
-    padding: 14px 15px 14px 48px; 
-    /* WARNA ASAL: Gelap sama macam background utama */
-    background-color: #0B132B !important; 
+    padding: 14px 15px 14px 48px;
+    background-color: var(--dark-blue);
     border: 1px solid #3A506B;
     border-radius: 8px;
-    color: #ffffff !important;
+    color: var(--text-white);
     font-size: 0.95rem;
     transition: 0.3s ease;
-    appearance: none; 
+    appearance: none;
 }
 
-/* Efek Glow bila klik */
-.input-wrapper input:focus, 
+.input-wrapper input:focus,
 .input-wrapper select:focus {
-    border-color: #5bc0be;
+    border-color: var(--sky-blue);
     outline: none;
     box-shadow: 0 0 0 2px rgba(91, 192, 190, 0.2);
 }
 
-/* --- DROPDOWN ARROW --- */
 .input-wrapper select {
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%235bc0be'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -1311,15 +633,13 @@ select option {
     background-size: 18px;
 }
 
-/* --- BUTTON REGISTER --- */
 .btn-register-main {
     width: 100%;
     padding: 15px;
-    /* WARNA ASAL: Turquoise / Teal */
-    background-color: #5bc0be; 
+    background-color: var(--sky-blue);
     border: none;
     border-radius: 8px;
-    color: #0B132B;
+    color: var(--dark-blue);
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
@@ -1334,121 +654,88 @@ select option {
     box-shadow: 0 5px 15px rgba(91, 192, 190, 0.3);
 }
 
-/* --- FOOTER & Ikon Mata --- */
-.register-footer {
-    margin-top: 25px;
-    text-align: center;
-    color: #123d61;
-    font-size: 0.85rem;
-}
+.register-footer { margin-top: 25px; text-align: center; font-size: 0.85rem; }
+.register-footer a { color: var(--sky-blue); text-decoration: none; font-weight: 600; }
 
-.register-footer a {
-    color: #5bc0be;
-    text-decoration: none;
-    font-weight: 600;
-}
+/* Password Toggle */
+.password-container { position: relative; display: flex; align-items: center; }
+.password-container input { width: 100%; padding-right: 40px; }
 
+.toggle-password,
 .password-toggle {
     position: absolute;
     right: 15px;
     cursor: pointer;
+    font-size: 1.2rem;
     z-index: 10;
     opacity: 0.7;
+    user-select: none;
     transition: 0.2s;
 }
 
-.password-toggle:hover {
-    opacity: 1;
-}
+.toggle-password:hover,
+.password-toggle:hover { opacity: 1; }
 
-/* ========================================= */
-/* KAD PROFIL PREMIUM (ULTRA-KEMAS)          */
-/* ========================================= */
+/* =========================================
+   STUDENT INFO CARD
+   ========================================= */
 .student-info-card {
-    background: linear-gradient(135deg, #1C2541 0%, #0B132B 100%);
+    background: linear-gradient(135deg, var(--card-blue) 0%, var(--dark-blue) 100%);
     border: 1px solid rgba(91, 192, 190, 0.3);
     border-radius: 12px;
     padding: 20px 25px;
-    
-    /* --- INI KOD RAHSIA UNTUK SAMAKAN LEBAR --- */
-    width: 100%; 
-    max-width: 1000px; /* Anggaran saiz kotak gred Hasif. Boleh ubah nombor ni (cth: 800px atau 950px) kalau tak ngam */
-    margin: 20px auto 30px auto; /* Perkataan 'auto' akan tolak kotak ni betul-betul ke tengah skrin */
-    /* ------------------------------------------ */
-
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto 30px auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
-    font-family: 'Poppins', sans-serif !important;
 }
-/* Efek garisan "Glow" turquoise di bahagian atas kad */
+
 .student-info-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     height: 4px;
-    background: #5bc0be;
+    background: var(--sky-blue);
 }
 
-.info-row {
-    display: flex;
-    align-items: flex-start; /* Pastikan teks bermula dari atas jika nama panjang */
-}
+.info-row  { display: flex; align-items: flex-start; }
 
 .info-label {
-    color: #94a3b8; 
-    font-size: 0.75rem; /* Kecilkan saiz label sedikit */
+    color: #94a3b8;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.5px; /* Kurangkan jarak antara huruf */
-    width: 85px; /* LEBAR DIPENDEKKAN: Jarak kini lebih rapat */
+    letter-spacing: 0.5px;
+    width: 85px;
     text-transform: uppercase;
-    flex-shrink: 0; 
-    padding-top: 3px; 
+    flex-shrink: 0;
+    padding-top: 3px;
 }
 
 .info-value {
-    color: #ffffff;
-    font-size: 0.95rem; /* Kecilkan saiz nama sedikit supaya muat */
+    color: var(--text-white);
+    font-size: 0.95rem;
     font-weight: 500;
-    letter-spacing: 0.5px;
-    word-break: break-word; 
+    flex: 1;
+    word-break: break-word;
     line-height: 1.3;
-    flex: 1; /* Tolak teks supaya mengambil semua ruang yang ada */
 }
 
-/* --- SUPAYA CANTIK BILA DICETAK KE PDF --- */
-@media print {
-    .student-info-card {
-        background: transparent !important;
-        border: 2px solid #000 !important;
-        box-shadow: none !important;
-        padding: 15px !important;
-    }
-    .student-info-card::before {
-        display: none !important;
-    }
-    .info-label {
-        color: #555 !important;
-    }
-    .info-value {
-        color: #000 !important;
-        font-weight: 700 !important;
-    }
-}
-
-/* --- GAYA DROPDOWN CARIAN TERAPUNG --- */
+/* =========================================
+   CUSTOM SEARCHABLE DROPDOWN
+   ========================================= */
 .custom-select-dropdown {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: #1e293b; /* Warna navy gelap Hasif */
-    border: 1px solid #5bc0be;
+    background: #1e293b;
+    border: 1px solid var(--sky-blue);
     border-radius: 8px;
     max-height: 250px;
     overflow-y: auto;
@@ -1458,22 +745,95 @@ select option {
     margin-top: 5px;
 }
 
+.custom-select-dropdown::-webkit-scrollbar       { width: 8px; }
+.custom-select-dropdown::-webkit-scrollbar-track { background: #1e293b; border-radius: 8px; }
+.custom-select-dropdown::-webkit-scrollbar-thumb { background: #5bc0be; border-radius: 4px; }
+
 .dropdown-item {
     padding: 12px 15px;
     cursor: pointer;
-    color: #ffffff;
+    color: var(--text-white);
     font-size: 0.9rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.dropdown-item:hover {
-    background: #5bc0be;
-    color: #0b132b;
+.dropdown-item:hover        { background: var(--sky-blue); color: var(--dark-blue); }
+.dropdown-no-result         { padding: 15px; color: #94a3b8; text-align: center; font-style: italic; }
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+    .container    { padding: 20px; }
+    header h1     { font-size: 1.8em; }
+    .tabs         { overflow-x: auto; }
+
+    .action-buttons,
+    .prediction-input {
+        flex-direction: column;
+    }
+
+    .prediction-input input { width: 100%; }
+    .btn-primary, .btn-secondary, .btn-danger { width: 100%; }
 }
 
-.dropdown-no-result {
-    padding: 15px;
-    color: #94a3b8;
-    text-align: center;
-    font-style: italic;
+@media (max-width: 600px) {
+    .container { width: 95%; padding: 10px; }
+    h1         { font-size: 1.5rem; }
+
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .subject-table th,
+    .subject-table td { font-size: 0.8rem; padding: 8px 4px; }
+}
+
+/* =========================================
+   PRINT / PDF
+   ========================================= */
+@media print {
+    .action-buttons,
+    .prediction-section,
+    .btn-print,
+    .semester-selector,
+    .top-right-nav,
+    footer,
+    button,
+    select { display: none !important; }
+
+    .print-gred-text { display: inline-block !important; font-weight: bold; color: black !important; }
+
+    body {
+        background-color: white !important;
+        color: black !important;
+        font-family: 'Times New Roman', serif;
+    }
+
+    .container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    table              { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td             { border: 1px solid #000 !important; padding: 8px; text-align: left; color: black !important; }
+
+    .student-info-card { background: transparent !important; border: 2px solid #000 !important; box-shadow: none !important; }
+    .student-info-card::before { display: none !important; }
+    .info-label        { color: #555 !important; }
+    .info-value        { color: #000 !important; font-weight: 700 !important; }
+
+    body::before {
+        content: "SLIP KEPUTUSAN PEPERIKSAAN";
+        display: block;
+        text-align: center;
+        font-size: 16pt;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-decoration: underline;
+    }
 }
