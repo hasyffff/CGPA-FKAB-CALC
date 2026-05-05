@@ -8,7 +8,7 @@ let myPersonalSyllabus = {}; // Ini akan pegang struktur subjek pelajar
 
 // 1. Biarkan ID Matrik dipapar jika ada (Jangan usik)
 if (mode === 'login' && studentId) {
-    document.body.insertAdjacentHTML('afterbegin', `<div style="text-align:center; padding:10px; background:#1a1a2e; color:white;">No. Matrik: ${studentId}</div>`);
+    document.body.insertAdjacentHTML('afterbegin', `<div style="text-align:center; padding:10px; background:#1a1a2e; color:white;">Matric No.: ${studentId}</div>`);
 }
 
 // 2. PINDAHKAN INI KE LUAR (Supaya dia sentiasa "mendengar" Firebase)
@@ -76,7 +76,7 @@ function simpanCGPA() {
             lastUpdated: new Date()
         })
         .then(() => {
-            alert("✅ Data berjaya disimpan ke awan! Anda boleh akses di mana-mana peranti.");
+            alert("✅ Data successfully saved to the cloud! You can access it on any device.");
         })
         .catch((error) => {
             console.error("Ralat simpan awan:", error);
@@ -84,7 +84,7 @@ function simpanCGPA() {
             localStorage.setItem('cgpa_' + studentId, JSON.stringify(savedGrades));
         });
     } else {
-        alert("⚠️ Anda dalam mod Tetamu. Data disimpan pada peranti ini sahaja.");
+        alert("⚠️ You are in Guest mode. Data is stored on this device only.");
         localStorage.setItem('cgpa_guest', JSON.stringify(savedGrades));
     }
 }
@@ -261,19 +261,19 @@ function createSemesterContent(semNum, subjects) {
     let html = `
         <div class="semester-header">
             <h3>Semester ${semNum}</h3>
-            <p>Jumlah Kredit: <strong>${totalCredits}</strong></p>
+            <p>Total Credits: <strong>${totalCredits}</strong></p>
         </div>
         
         <div class="table-responsive">
             <table class="subject-table">
             <thead>
                 <tr>
-                    <th style="width: 12%">Kod</th>
-                    <th style="width: 40%">Nama Kursus</th>
-                    <th style="width: 8%">Kredit</th>
-                    <th style="width: 8%">Taraf</th>
-                    <th style="width: 20%">Gred</th>
-                    <th style="width: 12%">Tindakan</th>
+                    <th style="width: 12%">Code</th>
+                    <th style="width: 40%">Course Name</th>
+                    <th style="width: 8%">Credit</th>
+                    <th style="width: 8%">Status</th>
+                    <th style="width: 20%">Grade</th>
+                    <th style="width: 12%">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -294,13 +294,13 @@ function createSemesterContent(semNum, subjects) {
                 <td><span class="badge">${subject.taraf}</span></td>
                 <td>
                     <select id="grade-${subject.kod}" onchange="saveGradeInput('${subject.kod}')">
-                        <option value="">- Pilih -</option>
+                        <option value="">- Select -</option>
                         ${createGradeOptions(savedGrade)}
                     </select>
                 </td>
                 <td style="text-align: center;">
                     <button onclick="removeDefaultSubject('${semNum}', '${subject.kod}')" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em; font-weight: 600;">
-                        Hapus
+                        Delete
                     </button>
                 </td>
             </tr>
@@ -313,7 +313,7 @@ html += `
         
 <div style="flex: 2; min-width: 200px; position: relative; display: flex; align-items: center;">
     <input type="text" id="add-subject-input-${semNum}" 
-           placeholder="🔍 Cari kod/nama subjek..." 
+           placeholder="🔍 Search subject code/name..." 
            autocomplete="off"
            onfocus="showCustomDropdown('${semNum}')" 
            onclick="showCustomDropdown('${semNum}')" /* TAMBAHAN: Paksa keluar bila diklik walau dah aktif */
@@ -338,7 +338,7 @@ html += `
         </div>
 
         <button onclick="addSubjectToSyllabus('${semNum}')" style="background: #5bc0be; color: #1a1a2e; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
-            + Masukkan Ke Jadual
+            + Add to Table
         </button>
     </div>
 `;
@@ -405,35 +405,35 @@ function addKOKU(semNum) {
     
     const kokuHtml = `
         <div class="koku-item" id="${kokuId}" style="background: #fff3cd; padding: 15px; margin-top: 10px; border-radius: 8px; border-left: 4px solid #ffc107;">
-            <h4 style="margin-bottom: 10px; color: #856404;">📚 Ko-Kurikulum</h4>
+            <h4 style="margin-bottom: 10px; color: #856404;">📚 Co-Curriculum</h4>
             <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; align-items: end;">
                 <div>
-                    <label style="font-weight: 600; color: #856404;">Pilih Subjek KOKU:</label>
+                    <label style="font-weight: 600; color: #856404;">Select KOKU Subject:</label>
                     <select id="${kokuId}-subject" onchange="updateKOKUCredit('${kokuId}')"
                             style="width: 100%; padding: 10px; border: 2px solid #ffc107; border-radius: 6px; font-size: 0.95em;">
-                        <option value="">-- Pilih KOKU --</option>
+                        <option value="">-- Select KOKU --</option>
                         ${kokuOptions}
                     </select>
                 </div>
                 <div>
-                    <label style="font-weight: 600; color: #856404;">Kredit:</label>
+                    <label style="font-weight: 600; color: #856404;">Credit:</label>
                     <input type="number" id="${kokuId}-credit" value="2" min="1" max="3" readonly
                            style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 6px; background: #f8f9fa;">
                 </div>
                 <div>
-                    <label style="font-weight: 600; color: #856404;">Gred:</label>
+                    <label style="font-weight: 600; color: #856404;">Grade:</label>
                     <select id="${kokuId}-grade" style="width: 100%; padding: 10px; border: 2px solid #ffc107; border-radius: 6px;">
-                        <option value="">- Pilih -</option>
+                        <option value="">- Select -</option>
                         ${createGradeOptions('')}
                     </select>
                 </div>
                 <button onclick="removeKOKU('${kokuId}')" 
                         style="background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                    Hapus
+                    Delete
                 </button>
             </div>
             <small style="color: #856404; display: block; margin-top: 5px;">
-                💡 Nota: Wajib ambil minimum 1 KOKU sepanjang pengajian
+                💡 Note: Mandatory to take minimum 1 KOKU during studies
             </small>
         </div>
     `;
@@ -450,7 +450,7 @@ function updateKOKUCredit(kokuId) {
 }
 
 function removeKOKU(kokuId) {
-    if (confirm('Hapus Ko-Kurikulum ini?')) {
+    if (confirm('Delete this Co-Curriculum?')) {
         document.getElementById(kokuId).remove();
     }
 }
@@ -485,17 +485,17 @@ function saveData() {
             lastUpdated: new Date()
         })
         .then(() => {
-            alert("✅ Tahniah! Data gred berjaya disimpan ke dalam akaun USIM anda.");
+            alert("✅ Congratulations! Grade data successfully saved to your USIM account.");
             console.log("Data disimpan:", savedGrades);
         })
         .catch((error) => {
             console.error("❌ Ralat simpan awan:", error);
-            alert("Gagal menyimpan data ke awan. Sila cuba lagi.");
+            alert("Failed to save data to the cloud. Please try again.");
         });
     } else {
         // Jika Mod Tetamu (Guest), simpan dalam komputer sahaja
         sessionStorage.setItem('cgpa_guest', JSON.stringify(savedGrades));
-        alert("⚠️ Mod Tetamu: Data hanya disimpan sementara. Ia akan terpadam secara automatik apabila anda menutup pelayar (browser) ini.");
+        alert("⚠️ Guest Mode: Data is only stored temporarily. It will be automatically deleted when you close this browser.");
     }
 }
 
@@ -516,7 +516,7 @@ function loadSavedData() {
 // RESET SEMUA (FACTORY RESET SEBENAR)
 // ============================================
 function clearAll() {
-    if (confirm('Anda pasti mahu reset semua data? Tindakan ini akan memadam data di peranti dan di awan (Firebase).')) {
+    if (confirm('Are you sure you want to reset all data? This action will delete data on this device and in the cloud (Firebase).')) {
         
         // 1. Cuci memori tempatan (PC/Phone)
         savedGrades = {};
@@ -543,7 +543,7 @@ function clearAll() {
         document.getElementById('currentGPA').textContent = '-';
         document.getElementById('overallCGPA').textContent = '-';
         
-        alert('✓ Semua data telah direset. Sistem anda kini bersih seperti baru.');
+        alert('✓ All data has been reset. Your system is now clean like new.');
     }
 }
 
@@ -623,8 +623,8 @@ function calculateAll(isSenyap = false) {
     if (currentSemGPA !== '-' && parseFloat(currentSemGPA) >= 3.60) {
         dekanMessageDiv.style.display = 'block';
         dekanMessageDiv.innerHTML = `
-            <strong>🎉 TAHNIAH! 🎉</strong><br>
-            Anda telah berjaya mencapai status <strong>Anugerah Dekan</strong> untuk semester ini dengan GPA ${currentSemGPA}! Teruskan kecemerlangan!
+            <strong>🎉 CONGRATULATIONS! 🎉</strong><br>
+            You have successfully achieved the <strong>Dean's List</strong> status for this semester with a GPA of ${currentSemGPA}! Keep up the excellence!
         `;
     } else {
         // Sembunyikan mesej jika GPA jatuh bawah 3.60 atau jika belum dikira
@@ -635,9 +635,9 @@ function calculateAll(isSenyap = false) {
     // Cari bahagian ni dan letak if (!isSenyap)
     if (!isSenyap) {
         if (totalCredits > 0) {
-            alert(`✓ Pengiraan selesai!\n\nCGPA Keseluruhan: ${cgpa}\nJumlah Kredit: ${totalCredits}`);
+            alert(`✓ Calculation complete!\n\nOverall CGPA: ${cgpa}\nTotal Credits: ${totalCredits}`);
         } else {
-            alert('⚠️ Sila masukkan gred untuk sekurang-kurangnya satu subjek.');
+            alert('⚠️ Please enter a grade for at least one subject.');
         }
     }
 }
@@ -650,7 +650,7 @@ function predictGrades() {
     const targetCGPA = parseFloat(document.getElementById('targetCGPA').value);
     
     if (!targetCGPA || targetCGPA < 0 || targetCGPA > 4) {
-        alert('⚠️ Sila masukkan target CGPA yang sah (0.00 - 4.00)');
+        alert('⚠️ Please enter a valid target CGPA (0.00 - 4.00)');
         return;
     }
     
@@ -685,7 +685,7 @@ function predictGrades() {
     }
     
     if (remainingCredits === 0) {
-        alert('⚠️ Tiada semester lagi untuk predict. Anda sudah di semester akhir.');
+        alert('⚠️ No more semesters to predict. You are already in your final semester.');
         return;
     }
     
@@ -697,14 +697,14 @@ function predictGrades() {
     
     if (requiredGPA > 4.0) {
         resultsDiv.innerHTML = `
-            <h4 style="color: #dc3545;">❌ Target Tidak Dapat Dicapai</h4>
-            <p>Maaf, target CGPA <strong>${targetCGPA.toFixed(2)}</strong> tidak mungkin dicapai walaupun anda mendapat 4.00 untuk semua subjek yang tinggal.</p>
-            <p>CGPA maksimum yang boleh dicapai: <strong>${((totalGradePoints + (remainingCredits * 4.0)) / (totalCredits + remainingCredits)).toFixed(2)}</strong></p>
+            <h4 style="color: #dc3545;">❌ Target Cannot Be Achieved</h4>
+            <p>Sorry, the target CGPA <strong>${targetCGPA.toFixed(2)}</strong> is impossible to achieve even if you get 4.00 for all remaining subjects.</p>
+            <p>Maximum achievable CGPA: <strong>${((totalGradePoints + (remainingCredits * 4.0)) / (totalCredits + remainingCredits)).toFixed(2)}</strong></p>
         `;
     } else if (requiredGPA <= (totalGradePoints / totalCredits) && requiredRemainingPoints <= 0) {
         resultsDiv.innerHTML = `
-            <h4 style="color: #28a745;">✓ Target Sudah Tercapai!</h4>
-            <p>CGPA semasa anda (<strong>${(totalGradePoints / totalCredits).toFixed(2)}</strong>) sudah berada di atas target yang anda inginkan.</p>
+            <h4 style="color: #28a745;">✓ Target Already Achieved!</h4>
+            <p>Your current CGPA (<strong>${(totalGradePoints / totalCredits).toFixed(2)}</strong>) is already above your desired target.</p>
         `;
     } else {
         
@@ -773,15 +773,15 @@ function predictGrades() {
             // 5. Cetak Visual dengan Dropdown Interaktif (Simulator)
             nextSemHTML = `
                 <h5 style="margin-top: 20px; color: var(--sky-blue); display: flex; align-items: center; gap: 8px;">
-                    🕹️ Simulator Strategi Semester ${nextSem}
+                    🕹️ Semester Strategy Simulator ${nextSem}
                 </h5>
-                <p style="font-size: 0.95em; opacity: 0.9;">Sistem telah memberikan cadangan awal. Anda bebas mengubah gred di bawah untuk melihat kesan pada CGPA anda secara langsung.</p>
+                <p style="font-size: 0.95em; opacity: 0.9;">The system has provided an initial recommendation. You are free to change the grades below to see the effect on your CGPA directly.</p>
                 
                 <div style="background: var(--theme-dark-blue); padding: 20px; border-radius: 12px; border: 2px solid var(--sky-blue); margin-top: 15px; text-align: center; box-shadow: 0 8px 25px rgba(91, 192, 190, 0.15);">
-                    <p style="margin: 0; color: #a0aec0; font-size: 0.95em; font-weight: 500;">Ramalan CGPA Baharu Anda</p>
+                    <p style="margin: 0; color: #a0aec0; font-size: 0.95em; font-weight: 500;">Your New Predicted CGPA</p>
                     <h2 id="live-cgpa-display" style="color: #28a745; margin: 10px 0; font-size: 3em; font-weight: 700; text-shadow: 0 0 15px rgba(40, 167, 69, 0.4);">${initialExpectedCGPA.toFixed(2)}</h2>
-                    <p id="live-warning" style="color: #dc3545; font-size: 0.9em; margin: 0; display: none; font-weight: 600;">⚠️ Kombinasi gred ini gagal melepasi sasaran ${targetCGPA.toFixed(2)}</p>
-                    <p id="live-success" style="color: var(--sky-blue); font-size: 0.9em; margin: 0; font-weight: 600;">✨ Sasaran berjaya dicapai!</p>
+                    <p id="live-warning" style="color: #dc3545; font-size: 0.9em; margin: 0; display: none; font-weight: 600;">⚠️ This grade combination fails to meet the target ${targetCGPA.toFixed(2)}</p>
+                    <p id="live-success" style="color: var(--sky-blue); font-size: 0.9em; margin: 0; font-weight: 600;">✨ Target successfully achieved!</p>
                 </div>
 
                 <ul style="background: transparent; padding: 0; margin-top: 25px; list-style: none;">

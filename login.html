@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,21 +9,21 @@
 
 <body class="auth-page">
   <div class="home-container">
-    <h1>Log Masuk</h1>
-    <p class="subtitle">Akses rekod CGPA anda</p>
+    <h1>Login</h1>
+    <p class="subtitle">Access your CGPA records</p>
 
     <form id="loginForm">
-      <input type="text" id="studentId" placeholder="ID Pelajar" required>
-      <input type="password" id="password" placeholder="Kata laluan" required>
+      <input type="text" id="studentId" placeholder="Student ID" required>
+      <input type="password" id="password" placeholder="Password" required>
       <button type="submit" class="btn btn-primary">Login</button>
     </form>
 
     <p class="link-text">
-      Belum ada akaun?
-      <a href="register.html">Daftar sekarang</a>
+      Don't have an account?
+      <a href="register.html">Register now</a>
     </p>
     <p class="link-text">
-      <a href="index.html">Kembali ke menu utama</a>
+      <a href="index.html">Back to main menu</a>
     </p>
   </div>
 
@@ -36,7 +36,7 @@
 
       const saved = localStorage.getItem('user_' + id);
       if (!saved) {
-        alert('Akaun tidak dijumpai. Sila daftar dahulu.');
+        alert('Account not found. Please register first.');
         return;
       }
 
@@ -49,7 +49,7 @@
         localStorage.setItem('currentProgram', user.program || '');
         window.location.href = 'calculator.html?id=' + encodeURIComponent(id);
       } else {
-        alert('ID atau kata laluan salah');
+        alert('Incorrect ID or password');
       }
 
     });

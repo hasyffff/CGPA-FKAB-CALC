@@ -69,7 +69,7 @@ const kokuSubjects = [
 // PROGRAM 1: ELECTRONIC ENGINEERING (SEM 1–8)
 // ============================================
 const electronicEngineering = {
-    name: "Kejuruteraan Elektronik",
+    name: "Electronic Engineering",
     fullName: "Bachelor of Electronic Engineering with Honours",
     semesters: {
         1: [
@@ -144,7 +144,7 @@ const electronicEngineering = {
 // PROGRAM 2: ELECTRICAL ENGINEERING (SEM 1–8)
 // ============================================
 const electricalEngineering = {
-    name: "Kejuruteraan Elektrik",
+    name: "Electrical Engineering",
     fullName: "Bachelor of Electrical Engineering with Honours",
     semesters: {
         1: [
@@ -304,11 +304,11 @@ const allEngineeringSubjects = [
 // EXPORT
 const programmes = {
   Electronic: {
-    fullName: 'Kejuruteraan Elektronik',
+    fullName: 'Electronic Engineering',
     semesters: electronicEngineering.semesters
   },
   Electrical: {
-    fullName: 'Kejuruteraan Elektrik',
+    fullName: 'Electrical Engineering',
     semesters: electricalEngineering.semesters
   }
 };

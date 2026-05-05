@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Elektronik - USIM</title>
+    <title>Electronic Calculator - USIM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -18,16 +18,16 @@
     </header>
 
     <div id="programSelection" class="container" style="display: none;">
-        <h2>Pilih Program Anda</h2>
+        <h2>Choose Your Program</h2>
     </div>
 
     <div class="student-info-card">
     <div class="info-row">
-        <span class="info-label">NAMA:</span>
-        <span class="info-value" id="display-nama">MEMUAT TURUN...</span>
+        <span class="info-label">NAME:</span>
+        <span class="info-value" id="display-nama">LOADING...</span>
     </div>
     <div class="info-row">
-        <span class="info-label">NO. MATRIK:</span>
+        <span class="info-label">MATRIC NO.:</span>
         <span class="info-value" id="display-matrik">-------</span>
     </div>
    </div>
@@ -35,7 +35,7 @@
     <div id="calculatorPage" class="container" style="display: block;">
 
         <div class="semester-selector">
-            <label>Saya sekarang di: </label>
+            <label>I am currently in: </label>
             <select id="currentSemester" onchange="updateVisibleSemesters()">
                 <option value="1">Semester 1</option>
                 <option value="2">Semester 2</option>
@@ -52,14 +52,14 @@
         <div id="semesterContent"></div>
 
         <div class="results" id="results">
-            <h3>Keputusan</h3>
+            <h3>Results</h3>
             <div class="result-box">
                 <div class="result-item">
-                    <span>GPA (Semester Semasa): </span>
+                    <span>Current Semester GPA: </span>
                     <span id="currentGPA" class="gpa-value">-</span>
                 </div>
                 <div class="result-item cgpa-main">
-                    <span>CGPA Keseluruhan:</span>
+                    <span>Overall CGPA:</span>
                     <span id="overallCGPA" class="cgpa-value">-</span>
                 </div>
             </div>
@@ -67,16 +67,16 @@
         </div>
 
         <div class="action-buttons">
-            <button onclick="calculateAll()" class="btn-primary">Kira CGPA</button>
-            <button onclick="saveData()" class="btn-secondary">Simpan Data</button>
-            <button onclick="clearAll()" class="btn-danger">Reset</button>
+            <button onclick="calculateAll()" class="btn-primary">Calculate CGPA</button>
+            <button onclick="saveData()" class="btn-secondary">Save Data</button>
+            <button onclick="clearAll()" class="btn-danger">Reset All</button>
         </div>
 
         <div class="prediction-section">
-            <h3>🎯 Kalkulator Ramalan CGPA</h3>
+            <h3>🎯 CGPA Prediction Calculator</h3>
             <div class="prediction-input">
-                <label>Target CGPA yang anda inginkan:</label>
-                <input type="number" id="targetCGPA" min="0" max="4" step="0.01" placeholder="Contoh: 3.75">
+                <label>Your desired Target CGPA:</label>
+                <input type="number" id="targetCGPA" min="0" max="4" step="0.01" placeholder="Example: 3.75">
                 <button onclick="predictGrades()" class="btn-predict">Predict Grade</button>
 
                 <button onclick="printReport()" class="btn-print" style="background: #2d3748; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: 5px;">

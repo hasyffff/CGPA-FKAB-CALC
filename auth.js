@@ -31,7 +31,7 @@ if (loginBtn) {
         const pw = document.getElementById('login-pw').value;
 
         if (!matrik || !pw) {
-            alert("Sila isi No. Matrik dan Kata Laluan.");
+            alert("Please enter Matric No. and Password.");
             return;
         }
 
@@ -39,7 +39,7 @@ if (loginBtn) {
         db.collection("users").where("noMatrik", "==", matrik).get()
         .then((querySnapshot) => {
             if (querySnapshot.empty) {
-                alert("❌ No. Matrik tidak wujud dalam sistem. Sila daftar dahulu.");
+                alert("❌ Matric No. does not exist in the system. Please register first.");
                 throw new Error("Matrik tidak wujud"); 
             }
 
@@ -78,7 +78,7 @@ if (loginBtn) {
         })
         .catch((error) => {
             if (error.message !== "Matrik tidak wujud") {
-                alert("❌ Ralat Log Masuk: Kata laluan salah atau masalah pelayan.");
+                alert("❌ Login Error: Incorrect password or server error.");
                 console.error("Ralat Log Masuk:", error);
             }
         });
@@ -103,7 +103,7 @@ if (registerForm) {
         const pass2 = document.getElementById('regPass2').value;
 
         if (pass !== pass2) {
-            alert('Ralat: Kata laluan tidak sepadan!');
+            alert('Error: Passwords do not match!');
             return;
         }
 
@@ -123,12 +123,12 @@ if (registerForm) {
         })
         .then(() => {
             console.log("✅ Langkah 2: Firestore berjaya simpan profil!");
-            alert('Akaun berjaya didaftar! Sila log masuk.');
+            alert('Account successfully registered! Please log in.');
             window.location.href = 'index.html'; 
         })
         .catch((error) => {
             console.error("❌ RALAT PENDAFTARAN:", error);
-            alert("Pendaftaran tergendala: " + error.message);
+            alert("Registration failed: " + error.message);
         });
     });
 }
@@ -148,7 +148,7 @@ auth.onAuthStateChanged((user) => {
                 console.log("🔍 DETEKTIF 2: Data Firestore dijumpai!", data);
                 
                 if (greetingText) {
-                    greetingText.innerHTML = `Selamat Datang, <b>${data.noMatrik}</b><br><span style="font-size: 1rem; font-weight: normal;">${data.kursus}</span>`;
+                    greetingText.innerHTML = `Welcome, <b>${data.noMatrik}</b><br><span style="font-size: 1rem; font-weight: normal;">${data.kursus}</span>`;
                 }
             } 
         }).catch((error) => {
@@ -157,7 +157,7 @@ auth.onAuthStateChanged((user) => {
         
     } else {
         if (greetingText) {
-            greetingText.innerHTML = `Mod Tetamu<br><span style="font-size: 1rem; font-weight: normal;">Sila pilih program anda</span>`;
+            greetingText.innerHTML = `Guest Mode<br><span style="font-size: 1rem; font-weight: normal;">Please select your program</span>`;
         }
     }
 });
@@ -174,7 +174,7 @@ if (guestBtn) {
         localStorage.removeItem('currentUser');
         localStorage.removeItem('currentProgram');
         
-        alert("⚠️ NOTA: Anda masuk sebagai Tetamu. Data gred anda akan hilang selepas anda menutup sistem ini.");
+        alert("⚠️ NOTE: You are entering as a Guest. Your grade data will be lost after you close this system.");
         window.location.href = './calculator.html'; 
     });
 }
@@ -183,14 +183,14 @@ if (guestBtn) {
 // FUNGSI LUPA KATA LALUAN (GUNA MATRIK - SMART LOOKUP)
 // ==========================================
 function forgotPassword() {
-    let matrik = prompt("Sila masukkan No. Matrik anda:");
+    let matrik = prompt("Please enter your Matric No.:");
     if (!matrik) return;
     matrik = matrik.trim();
 
     db.collection("users").where("noMatrik", "==", matrik).get()
     .then((querySnapshot) => {
         if (querySnapshot.empty) {
-            alert("❌ No. Matrik ini tidak dijumpai dalam sistem. Sila daftar dahulu.");
+            alert("❌ This Matric No. is not found in the system. Please register first.");
             throw new Error("Matrik tidak wujud");
         }
 
@@ -201,7 +201,7 @@ function forgotPassword() {
 
         // DETEKTIF CHECK: E-mel ada tak?
         if (!emailPersonal) {
-            alert("❌ Ralat Data: Profil anda tiada rekod e-mel personal. Sila hubungi Admin untuk reset manual.");
+            alert("❌ Data Error: Your profile has no personal email record. Please contact Admin to reset manually.");
             throw new Error("E-mel tiada dalam database");
         }
 
@@ -209,12 +209,12 @@ function forgotPassword() {
 
         return auth.sendPasswordResetEmail(emailPersonal)
         .then(() => {
-            alert("✅ Berjaya!\nPautan reset telah dihantar ke e-mel personal anda:\n" + emailPersonal);
+            alert("✅ Success!\nA reset link has been sent to your personal email:\n" + emailPersonal);
         });
     })
     .catch((error) => {
         if (error.message !== "Matrik tidak wujud" && error.message !== "E-mel tiada dalam database") {
-            alert("❌ Ralat: " + error.message);
+            alert("❌ Error: " + error.message);
         }
     });
 }
